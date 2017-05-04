@@ -24,6 +24,8 @@ AlbertCht\InvisibleReCaptcha\InvisibleReCaptchaServiceProvider::class,
 ```
 
 ### Configuration
+Before you set your config, remember to choose `invisible reCAPTCHA` while applying for keys.
+![invisible_recaptcha_setting](http://i.imgur.com/zIAlKbY.jpg)
 
 Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY` and `INVISIBLE_RECAPTCHA_BADGEHIDE`(optional) to **.env** file.
 
