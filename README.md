@@ -84,7 +84,7 @@ if (!empty($_POST)) {
 ?>
 
 <form action="?" method="POST">
-    <?php echo $captcha->display(); ?>
+    <?php echo $captcha->render(); ?>
     <button type="submit">Submit</button>
 </form>
 
