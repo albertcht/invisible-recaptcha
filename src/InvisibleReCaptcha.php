@@ -11,7 +11,7 @@ class InvisibleReCaptcha
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
 
     /**
-     * The reCaptcha sitekey key.
+     * The reCaptcha site key.
      *
      * @var string
      */
@@ -139,5 +139,45 @@ class InvisibleReCaptcha
         ]);
 
         return json_decode($response->getBody(), true);
+    }
+
+    /**
+     * Getter function of site key
+     *
+     * @return strnig
+     */
+    public function getSiteKey()
+    {
+        return $this->siteKey;
+    }
+
+    /**
+     * Getter function of secret key
+     *
+     * @return strnig
+     */
+    public function getSecretKey()
+    {
+        return $this->secretKey;
+    }
+
+    /**
+     * Getter function of hideBadge
+     *
+     * @return strnig
+     */
+    public function getHideBadge()
+    {
+        return $this->hideBadge;
+    }
+
+    /**
+     * Getter function of guzzle client
+     *
+     * @return strnig
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 }
