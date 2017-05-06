@@ -11,7 +11,7 @@ class InvisibleReCaptcha
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
 
     /**
-     * The reCaptcha sitekey key.
+     * The reCaptcha site key.
      *
      * @var string
      */
@@ -41,6 +41,7 @@ class InvisibleReCaptcha
      *
      * @param string $secretKey
      * @param string $siteKey
+     * @param boolean $hideBadge
      */
     public function __construct($siteKey, $secretKey, $hideBadge = false)
     {
@@ -61,12 +62,9 @@ class InvisibleReCaptcha
     {
         return $lang ? self::API_URI . '?hl=' . $lang : self::API_URI;
     }
+
     /**
-     * Render HTML reCaptcha by formId and submitId.
-     *
-     * @param string $formId
-     * @param string $submitId
-     * @param string $lang
+     * Render HTML reCaptcha by optional language param.
      *
      * @return string
      */
@@ -79,11 +77,12 @@ class InvisibleReCaptcha
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
         $html .= 'data-bind="send-btn" data-callback="_submitForm"></div>';
         $html .= '<script src="' . $this->getJs($lang) . '" async defer></script>' . "\n";
-        $html .= '<script>var _submitForm,_captchaForm, _captchaSubmit;</script>';
-        $html .= '<script>window.onload = function(){';
-        $html .= ' _captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
-        $html .= " _captchaSubmit=_captchaForm.querySelector('[type=submit]');";
-        $html .= '_submitForm=function(){_captchaForm.submit();}}</script>' . "\n";
+        $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit;</script>';
+        $html .= '<script>window.onload=function(){';
+        $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
+        $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
+        $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();}';
+        $html .= 'else{_captchaForm.submit();}}}</script>' . "\n";
 
         return $html;
     }
@@ -142,5 +141,43 @@ class InvisibleReCaptcha
         return json_decode($response->getBody(), true);
     }
 
-    
+    /**
+     * Getter function of site key
+     *
+     * @return strnig
+     */
+    public function getSiteKey()
+    {
+        return $this->siteKey;
+    }
+
+    /**
+     * Getter function of secret key
+     *
+     * @return strnig
+     */
+    public function getSecretKey()
+    {
+        return $this->secretKey;
+    }
+
+    /**
+     * Getter function of hideBadge
+     *
+     * @return strnig
+     */
+    public function getHideBadge()
+    {
+        return $this->hideBadge;
+    }
+
+    /**
+     * Getter function of guzzle client
+     *
+     * @return strnig
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
 }
