@@ -81,8 +81,8 @@ class InvisibleReCaptcha
         $html .= '<script>window.onload=function(){';
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
         $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
-        $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();}';
-        $html .= 'else{_captchaForm.submit();}}}</script>' . "\n";
+        $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
+        $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}}}</script>' . "\n";
 
         return $html;
     }
