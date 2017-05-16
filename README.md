@@ -100,6 +100,8 @@ The only thing you need to do is to implement `_submitEvent` in javascript
 _submitEvent = function() {
     console.log('submit button clicked.');
     // write your logic here
+    // submit your form
+    _submitForm();
 }
 ```
 Here's am example to use an ajax submit (using jquery selector)
