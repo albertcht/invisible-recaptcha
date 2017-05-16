@@ -60,7 +60,7 @@ class InvisibleReCaptcha
      */
     public function getJs($lang = null)
     {
-        return $lang ? self::API_URI . '?hl=' . $lang : self::API_URI;
+        return $lang ? static::API_URI . '?hl=' . $lang : static::API_URI;
     }
 
     /**
@@ -75,14 +75,16 @@ class InvisibleReCaptcha
             $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . "\n";
         }
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
-        $html .= 'data-bind="send-btn" data-callback="_submitForm"></div>';
+        $html .= 'data-size="invisible" data-callback="_submitForm"></div>';
         $html .= '<script src="' . $this->getJs($lang) . '" async defer></script>' . "\n";
         $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit;</script>';
         $html .= '<script>window.onload=function(){';
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
         $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
         $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
-        $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}}}</script>' . "\n";
+        $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}};';
+        $html .= "_captchaSubmit.addEventListener('click',";
+        $html .= "function(event){event.preventDefault();_submitForm()});}</script>" . "\n";
 
         return $html;
     }
@@ -134,7 +136,7 @@ class InvisibleReCaptcha
      */
     protected function sendVerifyRequest(array $query = [])
     {
-        $response = $this->client->post(self::VERIFY_URI, [
+        $response = $this->client->post(static::VERIFY_URI, [
             'form_params' => $query,
         ]);
 
