@@ -84,7 +84,7 @@ class InvisibleReCaptcha
         $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
         $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}};';
         $html .= "_captchaSubmit.addEventListener('click',";
-        $html .= "function(event){event.preventDefault();_submitForm()});}</script>" . "\n";
+        $html .= "function(event){event.preventDefault();grecaptcha.execute();});}</script>" . "\n";
 
         return $html;
     }
