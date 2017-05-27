@@ -6,7 +6,7 @@ Invisible reCAPTCHA
 
 ![invisible_recaptcha_demo](http://i.imgur.com/1dZ9XKn.png)
 
-## Why Invisible reCPATCHA?
+## Why Invisible reCAPTCHA?
 Invisible reCAPTCHA is an improved version of reCAPTCHA v2(no captcha).
 In reCAPTCHA v2, users need to click the button: "I'm not a robot" to prove they are human. In invisible reCAPTCHA, there will be not embed a captcha box for users to click. It's totally invisible! Only the badge will show on the buttom of the page to hint users that your website is using this technology. (The badge could be hidden, but not suggested.)
 
@@ -65,7 +65,37 @@ $validate = Validator::make(Input::all(), [
 
 ```
 
-## Without Laravel
+## CodeIgniter 3.x
+
+set in application/config/config.php :
+```php
+$config['composer_autoload'] = TRUE;  //around line 134
+```
+
+add lines in application/config/config.php :
+```php
+$config['recaptcha.sitekey'] = 'keyhere'; 
+$config['recaptcha.secret'] = 'secrethere';
+$config['recaptcha.badgehide'] = FALSE;
+```
+
+In controller, use:
+```php
+$data['captcha'] = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($this->config->item('recaptcha.sitekey'),
+	$this->config->item('recaptcha.secret'), $this->config->item(recaptcha.badgehide'));
+```
+
+In view, in your form:
+```php
+<?php echo $captcha->render(); ?>
+```
+
+Then back in your controller you can verify it:
+```php
+$captcha->verifyResponse($_POST['g-recaptcha-response']);
+```
+
+## Without Laravel or CodeIgniter
 
 Checkout example below:
 
