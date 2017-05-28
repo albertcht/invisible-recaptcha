@@ -70,13 +70,13 @@ class InvisibleReCaptcha
      */
     public function render($lang = null)
     {
-        $html = '<div id="_g-recaptcha"></div>' . "\n";
+        $html = '<div id="_g-recaptcha"></div>' . PHP_EOL;
         if ($this->hideBadge) {
-            $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . "\n";
+            $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
         }
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
         $html .= 'data-size="invisible" data-callback="_submitForm"></div>';
-        $html .= '<script src="' . $this->getJs($lang) . '" async defer></script>' . "\n";
+        $html .= '<script src="' . $this->getJs($lang) . '" async defer></script>' . PHP_EOL;
         $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit;</script>';
         $html .= '<script>window.onload=function(){';
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
@@ -84,7 +84,7 @@ class InvisibleReCaptcha
         $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
         $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}};';
         $html .= "_captchaSubmit.addEventListener('click',";
-        $html .= "function(event){event.preventDefault();grecaptcha.execute();});}</script>" . "\n";
+        $html .= "function(event){event.preventDefault();grecaptcha.execute();});}</script>" . PHP_EOL;
 
         return $html;
     }
