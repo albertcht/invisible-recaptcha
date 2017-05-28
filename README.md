@@ -39,6 +39,7 @@ INVISIBLE_RECAPTCHA_BADGEHIDE=false
 INVISIBLE_RECAPTCHA_DEBUG=false
 ```
 > If you set `INVISIBLE_RECAPTCHA_BADGEHIDE` to true, you can hide the badge logo.
+
 > You can see the binding status of those catcha elements on browser console by setting `INVISIBLE_RECAPTCHA_DEBUG` as true.
 
 ### Usage
