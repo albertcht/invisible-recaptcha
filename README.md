@@ -84,7 +84,7 @@ $config['recaptcha.badgehide'] = FALSE;
 In controller, use:
 ```php
 $data['captcha'] = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($this->config->item('recaptcha.sitekey'),
-    $this->config->item('recaptcha.secret'), $this->config->item(recaptcha.badgehide'));
+	$this->config->item('recaptcha.secret'), $this->config->item(recaptcha.badgehide'));
 ```
 
 In view, in your form:
