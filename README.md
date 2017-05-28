@@ -1,11 +1,14 @@
 Invisible reCAPTCHA
 ==========
+![php-badge](https://img.shields.io/badge/php-%3E%3D%205.6-8892BF.svg)
+[![packagist-badge](https://img.shields.io/packagist/v/albertcht/invisible-recaptcha.svg)](https://packagist.org/packages/albertcht/invisible-recaptcha)
+[![travis-badge](https://api.travis-ci.org/albertcht/invisible-recaptcha.svg?branch=master)](https://travis-ci.org/albertcht/invisible-recaptcha)
 
 ![invisible_recaptcha_demo](http://i.imgur.com/1dZ9XKn.png)
 
-## Why Invisible reCPATCHA?
+## Why Invisible reCAPTCHA?
 Invisible reCAPTCHA is an improved version of reCAPTCHA v2(no captcha).
-In reCAPTCHA v2, users need to click the button: "I'm not a robot" to prove they are human. In invisible reCAPTCHA, there will be not embed a captcha box for users to click. It's totally invisible! Only the badge will show on the buttom of the page to hint users that your website is using this technology. (The badge could be hidden, but not commented.)
+In reCAPTCHA v2, users need to click the button: "I'm not a robot" to prove they are human. In invisible reCAPTCHA, there will be not embed a captcha box for users to click. It's totally invisible! Only the badge will show on the buttom of the page to hint users that your website is using this technology. (The badge could be hidden, but not suggested.)
 
 ## Installation
 
@@ -24,6 +27,8 @@ AlbertCht\InvisibleReCaptcha\InvisibleReCaptchaServiceProvider::class,
 ```
 
 ### Configuration
+Before you set your config, remember to choose `invisible reCAPTCHA` while applying for keys.
+![invisible_recaptcha_setting](http://i.imgur.com/zIAlKbY.jpg)
 
 Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY` and `INVISIBLE_RECAPTCHA_BADGEHIDE`(optional) to **.env** file.
 
@@ -31,8 +36,10 @@ Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY` and `INVISIBL
 INVISIBLE_RECAPTCHA_SITEKEY={siteKey}
 INVISIBLE_RECAPTCHA_SECRETKEY={secretKey}
 INVISIBLE_RECAPTCHA_BADGEHIDE=false
+INVISIBLE_RECAPTCHA_DEBUG=false
 ```
 > If you set `INVISIBLE_RECAPTCHA_BADGEHIDE` to true, you can hide the badge logo.
+> You can see the binding status of those catcha elements on browser console by setting `INVISIBLE_RECAPTCHA_DEBUG` as true.
 
 ### Usage
 
@@ -55,12 +62,42 @@ Add `'g-recaptcha-response' => 'required|captcha'` to rules array.
 ```php
 
 $validate = Validator::make(Input::all(), [
-	'g-recaptcha-response' => 'required|captcha'
+    'g-recaptcha-response' => 'required|captcha'
 ]);
 
 ```
 
-## Without Laravel
+## CodeIgniter 3.x
+
+set in application/config/config.php :
+```php
+$config['composer_autoload'] = TRUE;  //around line 134
+```
+
+add lines in application/config/config.php :
+```php
+$config['recaptcha.sitekey'] = 'keyhere'; 
+$config['recaptcha.secret'] = 'secrethere';
+$config['recaptcha.badgehide'] = FALSE;
+```
+
+In controller, use:
+```php
+$data['captcha'] = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($this->config->item('recaptcha.sitekey'),
+    $this->config->item('recaptcha.secret'), $this->config->item(recaptcha.badgehide'));
+```
+
+In view, in your form:
+```php
+<?php echo $captcha->render(); ?>
+```
+
+Then back in your controller you can verify it:
+```php
+$captcha->verifyResponse($_POST['g-recaptcha-response']);
+```
+
+## Without Laravel or CodeIgniter
 
 Checkout example below:
 
@@ -82,16 +119,51 @@ if (!empty($_POST)) {
 ?>
 
 <form action="?" method="POST">
-    <?php echo $captcha->display(); ?>
+    <?php echo $captcha->render(); ?>
     <button type="submit">Submit</button>
 </form>
-
 ```
+
+## Customize Submit Function
+If you want to customize your submit function, for example: doing something after click the submit button or changing your submit to ajax call, etc.
+
+The only thing you need to do is to implement `_submitEvent` in javascript
+```javascript
+_submitEvent = function() {
+    console.log('submit button clicked.');
+    // write your logic here
+    // submit your form
+    _submitForm();
+}
+```
+Here's am example to use an ajax submit (using jquery selector)
+```javascript
+_submitEvent = function() {
+    $.ajax({
+        type: "POST",
+        url: "{{route('message.send')}}",
+         data: {
+            "name": $("#name").val(),
+            "email": $("#email").val(),
+            "content": $("#content").val(),
+            // important! don't forget to send `g-recaptcha-response`
+            "g-recaptcha-response": $("#g-recaptcha-response").val()
+        },
+        dataType: "json",
+        success: function(data) {
+            // success logic
+        },
+        error: function(data) {
+            // error logic
+        }
+    });
+};
+```
+
+
 ## Notes
 * `render()` function needs to be called within a form element.
 * There can only be one submit button in this form, and the `type` attribute has to be `submit` as well.
-* Don't try to bind any events to your submit button unless you know what you're doing. Otherwise the captcha will probably not take effect.
-* Currently not supported for ajax submit.
 
 ## Credits 
-https://github.com/anhskohbo/no-captcha
+anhskohbo (the author of no-captcha package)

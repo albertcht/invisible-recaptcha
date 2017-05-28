@@ -31,7 +31,8 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
             return new InvisibleReCaptcha(
                 $app['config']['captcha.siteKey'],
                 $app['config']['captcha.secretKey'],
-                $app['config']['captcha.hideBadge']
+                $app['config']['captcha.hideBadge'],
+                $app['config']['captcha.debug']
             );
         });
     }
@@ -51,8 +52,6 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
             $this->publishes([$path => config_path('captcha.php')]);
         }
     }
-
-
 
     /**
      * Get the services provided by the provider.

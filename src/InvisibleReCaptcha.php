@@ -9,6 +9,11 @@ class InvisibleReCaptcha
 {
     const API_URI = 'https://www.google.com/recaptcha/api.js';
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
+    const DEBUG_ELEMENTS = [
+        '_submitForm',
+        '_captchaForm',
+        '_captchaSubmit'
+    ];
 
     /**
      * The reCaptcha site key.
@@ -32,6 +37,13 @@ class InvisibleReCaptcha
     protected $hideBadge;
 
     /**
+     * The config to determine if show debug info.
+     *
+     * @var boolean
+     */
+    protected $debug;
+
+    /**
      * @var \GuzzleHttp\Client
      */
     protected $client;
@@ -43,11 +55,12 @@ class InvisibleReCaptcha
      * @param string $siteKey
      * @param boolean $hideBadge
      */
-    public function __construct($siteKey, $secretKey, $hideBadge = false)
+    public function __construct($siteKey, $secretKey, $hideBadge = false, $debug = false)
     {
         $this->siteKey = $siteKey;
         $this->secretKey = $secretKey;
         $this->hideBadge = $hideBadge;
+        $this->debug = $debug;
         $this->client = new Client(['timeout' => 5]);
     }
 
@@ -84,9 +97,39 @@ class InvisibleReCaptcha
         $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
         $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}};';
         $html .= "_captchaSubmit.addEventListener('click',";
-        $html .= "function(event){event.preventDefault();grecaptcha.execute();});}</script>" . PHP_EOL;
+        $html .= "function(event){event.preventDefault();grecaptcha.execute();});";
+        if ($this->debug) {
+            $html .= $this->renderDebug();
+        }
+        $html .= "}</script>" . PHP_EOL;
 
         return $html;
+    }
+
+    /**
+     * Get debug javascript code.
+     *
+     * @return string
+     */
+    public function renderDebug()
+    {
+        $html = '';
+        foreach (static::DEBUG_ELEMENTS as $element) {
+            $html .= $this->consoleLog('"Checking element binding of ' . $element . '..."');
+            $html .= $this->consoleLog($element . '!==undefined');
+        }
+
+        return $html;
+    }
+
+    /**
+     * Get console.log function for javascript code.
+     *
+     * @return string
+     */
+    public function consoleLog($string)
+    {
+        return "console.log({$string});";
     }
 
     /**
@@ -171,6 +214,16 @@ class InvisibleReCaptcha
     public function getHideBadge()
     {
         return $this->hideBadge;
+    }
+
+    /**
+     * Getter function of debug
+     *
+     * @return strnig
+     */
+    public function getDebug()
+    {
+        return $this->debug;
     }
 
     /**
