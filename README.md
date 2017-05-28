@@ -30,7 +30,7 @@ AlbertCht\InvisibleReCaptcha\InvisibleReCaptchaServiceProvider::class,
 Before you set your config, remember to choose `invisible reCAPTCHA` while applying for keys.
 ![invisible_recaptcha_setting](http://i.imgur.com/zIAlKbY.jpg)
 
-Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY` and `INVISIBLE_RECAPTCHA_BADGEHIDE`(optional) to **.env** file.
+Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY`, `INVISIBLE_RECAPTCHA_BADGEHIDE`(optional), `INVISIBLE_RECAPTCHA_DEBUG`(optional) to **.env** file.
 
 ```
 INVISIBLE_RECAPTCHA_SITEKEY={siteKey}
@@ -80,12 +80,17 @@ add lines in application/config/config.php :
 $config['recaptcha.sitekey'] = 'keyhere'; 
 $config['recaptcha.secret'] = 'secrethere';
 $config['recaptcha.badgehide'] = FALSE;
+$config['recaptcha.debug'] = FALSE;
 ```
 
 In controller, use:
 ```php
-$data['captcha'] = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($this->config->item('recaptcha.sitekey'),
-	$this->config->item('recaptcha.secret'), $this->config->item(recaptcha.badgehide'));
+$data['captcha'] = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha(
+    $this->config->item('recaptcha.sitekey'),
+    $this->config->item('recaptcha.secret'),
+    $this->config->item('recaptcha.badgehide'),
+    $this->config->item('recaptcha.debug'),
+);
 ```
 
 In view, in your form:
@@ -110,7 +115,8 @@ require_once "vendor/autoload.php";
 $siteKey = '';
 $secretKey = '';
 $hideBadge = false;
-$captcha = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($siteKey, $secretKey, $hideBadge);
+$debug = false;
+$captcha = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($siteKey, $secretKey, $hideBadge, $debug);
 
 if (!empty($_POST)) {
     var_dump($captcha->verifyResponse($_POST['g-recaptcha-response']));
