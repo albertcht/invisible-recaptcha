@@ -36,8 +36,10 @@ Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY` and `INVISIBL
 INVISIBLE_RECAPTCHA_SITEKEY={siteKey}
 INVISIBLE_RECAPTCHA_SECRETKEY={secretKey}
 INVISIBLE_RECAPTCHA_BADGEHIDE=false
+INVISIBLE_RECAPTCHA_DEBUG=false
 ```
 > If you set `INVISIBLE_RECAPTCHA_BADGEHIDE` to true, you can hide the badge logo.
+> You can see the binding status of those catcha elements on browser console by setting `INVISIBLE_RECAPTCHA_DEBUG` as true.
 
 ### Usage
 
@@ -60,7 +62,7 @@ Add `'g-recaptcha-response' => 'required|captcha'` to rules array.
 ```php
 
 $validate = Validator::make(Input::all(), [
-	'g-recaptcha-response' => 'required|captcha'
+    'g-recaptcha-response' => 'required|captcha'
 ]);
 
 ```
