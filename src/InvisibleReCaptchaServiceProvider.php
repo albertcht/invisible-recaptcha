@@ -3,21 +3,25 @@
 namespace AlbertCht\InvisibleReCaptcha;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\Compilers\BladeCompiler;
 
 class InvisibleReCaptchaServiceProvider extends ServiceProvider
 {
     /**
      * Boot the services for the application.
      *
+     * @param BladeCompiler $blade
      * @return void
      */
-    public function boot()
+    public function boot(BladeCompiler $blade)
     {
         $app = $this->app;
         $this->bootConfig();
         $this->app['validator']->extend('captcha', function ($attribute, $value) use ($app) {
             return $app['captcha']->verifyResponse($value, $app['request']->getClientIp());
         });
+
+        $this->addBladeDirective($blade);
     }
 
     /**
@@ -61,5 +65,16 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
     public function provides()
     {
         return ['captcha'];
+    }
+
+    /**
+     * @param BladeCompiler $blade
+     * @return void
+     */
+    public function addBladeDirective(BladeCompiler $blade)
+    {
+        $blade->directive('captcha', function ($lang) {
+            return "<?php echo app('captcha')->render(" . ($lang ? "'$lang'" : '') . '); ?>';
+        });
     }
 }
