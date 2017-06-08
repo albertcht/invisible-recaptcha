@@ -44,15 +44,21 @@ INVISIBLE_RECAPTCHA_DEBUG=false
 
 ### Usage
 
-##### Display reCAPTCHA in a Blade template
+##### Display reCAPTCHA in Your View
 
 ```php
+{!! app('captcha')->render(); !!}
+
+// or you can use this in blade
 @captcha()
 ```
 
 With custom language support:
 
-```
+```php
+{!! app('captcha')->render($lang = null); !!}
+
+// or you can use this in blade
 @captcha($lang = null)
 ```
 
