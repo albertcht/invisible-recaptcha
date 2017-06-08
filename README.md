@@ -44,16 +44,16 @@ INVISIBLE_RECAPTCHA_DEBUG=false
 
 ### Usage
 
-##### Display reCAPTCHA
+##### Display reCAPTCHA in a Blade template
 
 ```php
-{!! app('captcha')->render(); !!}
+@captcha()
 ```
 
 With custom language support:
 
 ```
-{!! app('captcha')->render($lang = null); !!}
+@captcha($lang = null)
 ```
 
 ##### Validation
