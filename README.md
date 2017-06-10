@@ -44,6 +44,12 @@ INVISIBLE_RECAPTCHA_DEBUG=false
 
 ### Usage
 
+Before you render the captcha, please keep those notices in mind:
+
+* `render()` function needs to be called within a form element.
+* You have to ensure the `type` attribute of your submit button has to be `submit`.
+* There can only be one submit button in your form.
+
 ##### Display reCAPTCHA in Your View
 
 ```php
@@ -173,10 +179,7 @@ _submitEvent = function() {
 };
 ```
 
-
-## Notes
-* `render()` function needs to be called within a form element.
-* There can only be one submit button in this form, and the `type` attribute has to be `submit` as well.
-
 ## Credits 
-anhskohbo (the author of no-captcha package)
+
+* anhskohbo (the author of no-captcha package)
+* [Contributors](https://github.com/albertcht/invisible-recaptcha/graphs/contributors)
