@@ -181,7 +181,7 @@ _submitEvent = function() {
 
 ## Showcases
 
-* [laravel-boilerplate](https://github.com/Labs64/laravel-boilerplate)
+* [Laravel Boilerplate](https://github.com/Labs64/laravel-boilerplate)
 
 ## Credits 
 
