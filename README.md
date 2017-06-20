@@ -38,6 +38,16 @@ INVISIBLE_RECAPTCHA_SECRETKEY={secretKey}
 INVISIBLE_RECAPTCHA_BADGEHIDE=false
 INVISIBLE_RECAPTCHA_DEBUG=false
 ```
+
+or in `app.php` in `config` dir
+
+```
+'invisible_recaptcha_sitekey' => '{siteKey}',
+'invisible_recaptcha_secretkey' => '{secretKey}',
+'invisible_recaptcha_badgehide' => false,
+'invisible_recaptcha_debug' => false,
+```
+
 > If you set `INVISIBLE_RECAPTCHA_BADGEHIDE` to true, you can hide the badge logo.
 
 > You can see the binding status of those catcha elements on browser console by setting `INVISIBLE_RECAPTCHA_DEBUG` as true.
