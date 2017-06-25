@@ -77,11 +77,11 @@ class InvisibleReCaptcha
     }
 
     /**
-     * Render HTML reCaptcha by optional language param.
+     * Render HTML reCaptcha by optional language param and optional formId param.
      *
      * @return string
      */
-    public function render($lang = null)
+    public function render($lang = null, $formId = null)
     {
         $html = '<div id="_g-recaptcha"></div>' . PHP_EOL;
         if ($this->hideBadge) {
@@ -92,7 +92,11 @@ class InvisibleReCaptcha
         $html .= '<script src="' . $this->getJs($lang) . '" async defer></script>' . PHP_EOL;
         $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit;</script>';
         $html .= '<script>window.onload=function(){';
-        $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
+        $form = '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
+        if($formId !== null){
+            $form = "_captchaForm=document.getElementById('{$formId}');";
+        }
+        $html .= $form;
         $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
         $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
         $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}};';
