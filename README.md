@@ -30,7 +30,7 @@ AlbertCht\InvisibleReCaptcha\InvisibleReCaptchaServiceProvider::class,
 Before you set your config, remember to choose `invisible reCAPTCHA` while applying for keys.
 ![invisible_recaptcha_setting](http://i.imgur.com/zIAlKbY.jpg)
 
-Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY` and `INVISIBLE_RECAPTCHA_BADGEHIDE`(optional) to **.env** file.
+Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY`, `INVISIBLE_RECAPTCHA_BADGEHIDE`(optional), `INVISIBLE_RECAPTCHA_DEBUG`(optional) to **.env** file.
 
 ```
 INVISIBLE_RECAPTCHA_SITEKEY={siteKey}
@@ -39,20 +39,33 @@ INVISIBLE_RECAPTCHA_BADGEHIDE=false
 INVISIBLE_RECAPTCHA_DEBUG=false
 ```
 > If you set `INVISIBLE_RECAPTCHA_BADGEHIDE` to true, you can hide the badge logo.
+
 > You can see the binding status of those catcha elements on browser console by setting `INVISIBLE_RECAPTCHA_DEBUG` as true.
 
 ### Usage
 
-##### Display reCAPTCHA
+Before you render the captcha, please keep those notices in mind:
+
+* `render()` function needs to be called within a form element.
+* You have to ensure the `type` attribute of your submit button has to be `submit`.
+* There can only be one submit button in your form.
+
+##### Display reCAPTCHA in Your View
 
 ```php
 {!! app('captcha')->render(); !!}
+
+// or you can use this in blade
+@captcha()
 ```
 
 With custom language support:
 
-```
+```php
 {!! app('captcha')->render($lang = null); !!}
+
+// or you can use this in blade
+@captcha($lang = null)
 ```
 
 ##### Validation
@@ -79,12 +92,17 @@ add lines in application/config/config.php :
 $config['recaptcha.sitekey'] = 'keyhere'; 
 $config['recaptcha.secret'] = 'secrethere';
 $config['recaptcha.badgehide'] = FALSE;
+$config['recaptcha.debug'] = FALSE;
 ```
 
 In controller, use:
 ```php
-$data['captcha'] = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($this->config->item('recaptcha.sitekey'),
-	$this->config->item('recaptcha.secret'), $this->config->item(recaptcha.badgehide'));
+$data['captcha'] = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha(
+    $this->config->item('recaptcha.sitekey'),
+    $this->config->item('recaptcha.secret'),
+    $this->config->item('recaptcha.badgehide'),
+    $this->config->item('recaptcha.debug'),
+);
 ```
 
 In view, in your form:
@@ -109,7 +127,8 @@ require_once "vendor/autoload.php";
 $siteKey = '';
 $secretKey = '';
 $hideBadge = false;
-$captcha = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($siteKey, $secretKey, $hideBadge);
+$debug = false;
+$captcha = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($siteKey, $secretKey, $hideBadge, $debug);
 
 if (!empty($_POST)) {
     var_dump($captcha->verifyResponse($_POST['g-recaptcha-response']));
@@ -160,10 +179,11 @@ _submitEvent = function() {
 };
 ```
 
+## Showcases
 
-## Notes
-* `render()` function needs to be called within a form element.
-* There can only be one submit button in this form, and the `type` attribute has to be `submit` as well.
+* [Laravel Boilerplate](https://github.com/Labs64/laravel-boilerplate)
 
 ## Credits 
-anhskohbo (the author of no-captcha package)
+
+* anhskohbo (the author of no-captcha package)
+* [Contributors](https://github.com/albertcht/invisible-recaptcha/graphs/contributors)

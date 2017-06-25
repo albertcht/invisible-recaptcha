@@ -96,7 +96,7 @@ class InvisibleReCaptcha
         $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
         $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
         $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}};';
-        $html .= "_captchaSubmit.addEventListener('click',";
+        $html .= "_captchaForm.addEventListener('submit',";
         $html .= "function(event){event.preventDefault();grecaptcha.execute();});";
         if ($this->debug) {
             $html .= $this->renderDebug();
