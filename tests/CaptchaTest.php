@@ -37,12 +37,19 @@ class CaptchaTest extends TestCase
         $this->assertTrue($this->captcha->getClient() instanceof \GuzzleHttp\Client);
     }
 
-    public function testGetJS()
+    public function testGetCaptchaJs()
     {
         $js = 'https://www.google.com/recaptcha/api.js';
 
-        $this->assertEquals($js, $this->captcha->getJs());
-        $this->assertEquals($js . '?hl=us', $this->captcha->getJs('us'));
+        $this->assertEquals($js, $this->captcha->getCaptchaJs());
+        $this->assertEquals($js . '?hl=us', $this->captcha->getCaptchaJs('us'));
+    }
+
+    public function testGetPolyfillJs()
+    {
+        $js = 'https://cdn.polyfill.io/v2/polyfill.min.js';
+
+        $this->assertEquals($js, $this->captcha->getPolyfillJs());
     }
 
     public function testBladeDirective()

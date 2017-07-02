@@ -9,6 +9,7 @@ class InvisibleReCaptcha
 {
     const API_URI = 'https://www.google.com/recaptcha/api.js';
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
+    const POLYFILL_URI = 'https://cdn.polyfill.io/v2/polyfill.min.js';
     const DEBUG_ELEMENTS = [
         '_submitForm',
         '_captchaForm',
@@ -71,9 +72,19 @@ class InvisibleReCaptcha
      *
      * @return string
      */
-    public function getJs($lang = null)
+    public function getCaptchaJs($lang = null)
     {
         return $lang ? static::API_URI . '?hl=' . $lang : static::API_URI;
+    }
+
+    /**
+     * Get polyfill js
+     *
+     * @return string
+     */
+    public function getPolyfillJs()
+    {
+        return static::POLYFILL_URI;
     }
 
     /**
@@ -83,13 +94,14 @@ class InvisibleReCaptcha
      */
     public function render($lang = null)
     {
-        $html = '<div id="_g-recaptcha"></div>' . PHP_EOL;
+        $html = '<script src="' . $this->getPolyfillJs() . '"></script>' . PHP_EOL;
+        $html .= '<div id="_g-recaptcha"></div>' . PHP_EOL;
         if ($this->hideBadge) {
             $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
         }
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
         $html .= 'data-size="invisible" data-callback="_submitForm"></div>';
-        $html .= '<script src="' . $this->getJs($lang) . '" async defer></script>' . PHP_EOL;
+        $html .= '<script src="' . $this->getCaptchaJs($lang) . '" async defer></script>' . PHP_EOL;
         $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit;</script>';
         $html .= '<script>window.onload=function(){';
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
