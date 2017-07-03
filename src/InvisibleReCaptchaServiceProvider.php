@@ -10,18 +10,14 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
     /**
      * Boot the services for the application.
      *
-     * @param BladeCompiler $blade
      * @return void
      */
-    public function boot(BladeCompiler $blade)
+    public function boot()
     {
-        $app = $this->app;
         $this->bootConfig();
-        $this->app['validator']->extend('captcha', function ($attribute, $value) use ($app) {
-            return $app['captcha']->verifyResponse($value, $app['request']->getClientIp());
+        $this->app['validator']->extend('captcha', function ($attribute, $value) {
+            return $this->app['captcha']->verifyResponse($value, $this->app['request']->getClientIp());
         });
-
-        $this->addBladeDirective($blade);
     }
 
     /**
@@ -38,6 +34,10 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
                 $app['config']['captcha.hideBadge'],
                 $app['config']['captcha.debug']
             );
+        });
+
+        $this->app->resolving('view', function () {
+            $this->addBladeDirective($this->app['blade.compiler']);
         });
     }
 
