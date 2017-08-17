@@ -10,7 +10,7 @@ Invisible reCAPTCHA
 * **Do not use multiple captchas in one page for protecting every form far from bots**, it will cause terrible user experience.
 
 ## Usage Example
-```
+```php
 {!! Form::open(['url' => '/', 'id' => 'form1']) !!}
 @captcha()
 {!! Form::submit('Sumbit', ['id'=>'s1']) !!}
@@ -23,7 +23,7 @@ Invisible reCAPTCHA
 ```
 > Just call captcha function in forms directly, it will render only one captcha and all the forms will share the same captcha validation.
 
-```
+```javascript
 <script type="text/javascript">
     $('#s2').on('captcha', function(e) {
         // set it as false if your don't want to submit your from directly
