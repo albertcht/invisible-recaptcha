@@ -9,12 +9,7 @@ class InvisibleReCaptcha
 {
     const API_URI = 'https://www.google.com/recaptcha/api.js';
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
-    const POLYFILL_URI = 'https://cdn.polyfill.io/v2/polyfill.min.js';
-    const DEBUG_ELEMENTS = [
-        '_submitForm',
-        '_captchaForm',
-        '_captchaSubmit'
-    ];
+    const JQUERY_URI = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js';
 
     /**
      * The reCaptcha site key.
@@ -38,16 +33,16 @@ class InvisibleReCaptcha
     protected $hideBadge;
 
     /**
-     * The config to determine if show debug info.
-     *
-     * @var boolean
-     */
-    protected $debug;
-
-    /**
      * @var \GuzzleHttp\Client
      */
     protected $client;
+
+    /**
+     * Rendered number in total.
+     *
+     * @var integer
+     */
+    protected $renderedTimes = 0;
 
     /**
      * InvisibleReCaptcha.
@@ -56,12 +51,11 @@ class InvisibleReCaptcha
      * @param string $siteKey
      * @param boolean $hideBadge
      */
-    public function __construct($siteKey, $secretKey, $hideBadge = false, $debug = false)
+    public function __construct($siteKey, $secretKey, $hideBadge = false)
     {
         $this->siteKey = $siteKey;
         $this->secretKey = $secretKey;
         $this->hideBadge = $hideBadge;
-        $this->debug = $debug;
         $this->client = new Client(['timeout' => 5]);
     }
 
@@ -74,17 +68,18 @@ class InvisibleReCaptcha
      */
     public function getCaptchaJs($lang = null)
     {
-        return $lang ? static::API_URI . '?hl=' . $lang : static::API_URI;
+        $api = static::API_URI . '?onload=_captchaCallback&render=explicit';
+        return $lang ? $api . '&hl=' . $lang : $api;
     }
 
     /**
-     * Get polyfill js
+     * Get jQuery js
      *
      * @return string
      */
-    public function getPolyfillJs()
+    public function getJQueryJs()
     {
-        return static::POLYFILL_URI;
+        return static::JQUERY_URI;
     }
 
     /**
@@ -94,54 +89,37 @@ class InvisibleReCaptcha
      */
     public function render($lang = null)
     {
-        $html = '<script src="' . $this->getPolyfillJs() . '"></script>' . PHP_EOL;
-        $html .= '<div id="_g-recaptcha"></div>' . PHP_EOL;
+        $html = '';
+        if ($this->renderedTimes === 0) {
+            $html .= $this->initRender($lang);
+        } else {
+            $this->renderedTimes++;
+        }
+        $html .= "<div class='_g-recaptcha' id='_g-recaptcha_{$this->renderedTimes}'></div>" . PHP_EOL;
+
+        return $html;
+    }
+
+    public function initRender($lang)
+    {
+        $html = '<script src="' . $this->getJQueryJs() . '"></script>' . PHP_EOL;
+        $html .= '<script>var _renderedTimes,_captchaCallback,_captchaForms,_submitForm,_submitBtn;</script>';
+        $html .= '<script>var _submitAction=true,_captchaForm;</script>';
+        $html .= "<script>$.getScript('{$this->getCaptchaJs($lang)}').done(function(data,status,jqxhr){";
+        $html .= '_renderedTimes=$("._g-recaptcha").length;_captchaForms=$("._g-recaptcha").closest("form");';
+        $html .= '_captchaForms.each(function(){$(this)[0].addEventListener("submit",function(e){e.preventDefault();';
+        $html .= '_captchaForm=$(this);_submitBtn=$(this).find(":submit");grecaptcha.execute();});});';
+        $html .= '_submitForm=function(){_submitBtn.trigger("captcha");if(_submitAction){_captchaForm.submit();}};';
+        $html .= '_captchaCallback=function(){grecaptcha.render("_g-recaptcha_"+_renderedTimes,';
+        $html .= "{sitekey:'{$this->siteKey}',size:'invisible',callback:_submitForm});}";
+        $html .= '});</script>' . PHP_EOL;
+
         if ($this->hideBadge) {
             $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
         }
-        $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
-        $html .= 'data-size="invisible" data-callback="_submitForm"></div>';
-        $html .= '<script src="' . $this->getCaptchaJs($lang) . '" async defer></script>' . PHP_EOL;
-        $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit;</script>';
-        $html .= '<script>window.onload=function(){';
-        $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
-        $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
-        $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
-        $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}};';
-        $html .= "_captchaForm.addEventListener('submit',";
-        $html .= "function(event){event.preventDefault();grecaptcha.execute();});";
-        if ($this->debug) {
-            $html .= $this->renderDebug();
-        }
-        $html .= "}</script>" . PHP_EOL;
 
+        $this->renderedTimes++;
         return $html;
-    }
-
-    /**
-     * Get debug javascript code.
-     *
-     * @return string
-     */
-    public function renderDebug()
-    {
-        $html = '';
-        foreach (static::DEBUG_ELEMENTS as $element) {
-            $html .= $this->consoleLog('"Checking element binding of ' . $element . '..."');
-            $html .= $this->consoleLog($element . '!==undefined');
-        }
-
-        return $html;
-    }
-
-    /**
-     * Get console.log function for javascript code.
-     *
-     * @return string
-     */
-    public function consoleLog($string)
-    {
-        return "console.log({$string});";
     }
 
     /**
@@ -229,16 +207,6 @@ class InvisibleReCaptcha
     }
 
     /**
-     * Getter function of debug
-     *
-     * @return strnig
-     */
-    public function getDebug()
-    {
-        return $this->debug;
-    }
-
-    /**
      * Getter function of guzzle client
      *
      * @return strnig
@@ -246,5 +214,15 @@ class InvisibleReCaptcha
     public function getClient()
     {
         return $this->client;
+    }
+
+    /**
+     * Getter function of rendered times
+     *
+     * @return strnig
+     */
+    public function getRenderedTimes()
+    {
+        return $this->renderedTimes;
     }
 }
