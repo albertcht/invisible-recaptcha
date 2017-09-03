@@ -38,6 +38,13 @@ class InvisibleReCaptcha
     protected $hideBadge;
 
     /**
+     * Reposition the reCAPTCHA badge.
+     *
+     * @var string
+     */
+    protected $dataBadge;
+
+    /**
      * The config to determine if show debug info.
      *
      * @var boolean
@@ -56,11 +63,12 @@ class InvisibleReCaptcha
      * @param string $siteKey
      * @param boolean $hideBadge
      */
-    public function __construct($siteKey, $secretKey, $hideBadge = false, $debug = false)
+    public function __construct($siteKey, $secretKey, $hideBadge = false, $dataBadge = 'bottomright', $debug = false)
     {
         $this->siteKey = $siteKey;
         $this->secretKey = $secretKey;
         $this->hideBadge = $hideBadge;
+        $this->dataBadge = $dataBadge;
         $this->debug = $debug;
         $this->client = new Client(['timeout' => 5]);
     }
@@ -100,7 +108,7 @@ class InvisibleReCaptcha
             $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
         }
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
-        $html .= 'data-size="invisible" data-callback="_submitForm"></div>';
+        $html .= 'data-size="invisible" data-callback="_submitForm" data-badge="' . $this->dataBadge . '"></div>';
         $html .= '<script src="' . $this->getCaptchaJs($lang) . '" async defer></script>' . PHP_EOL;
         $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit,_execute=true;</script>';
         $html .= '<script>window.onload=function(){';
@@ -227,6 +235,16 @@ class InvisibleReCaptcha
     public function getHideBadge()
     {
         return $this->hideBadge;
+    }
+
+    /**
+     * Getter function of dataBadge
+     *
+     * @return strnig
+     */
+    public function getDataBadge()
+    {
+        return $this->dataBadge;
     }
 
     /**
