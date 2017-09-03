@@ -30,14 +30,17 @@ AlbertCht\InvisibleReCaptcha\InvisibleReCaptchaServiceProvider::class,
 Before you set your config, remember to choose `invisible reCAPTCHA` while applying for keys.
 ![invisible_recaptcha_setting](http://i.imgur.com/zIAlKbY.jpg)
 
-Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY`, `INVISIBLE_RECAPTCHA_BADGEHIDE`(optional), `INVISIBLE_RECAPTCHA_DEBUG`(optional) to **.env** file.
+Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY`, `INVISIBLE_RECAPTCHA_BADGEHIDE`(optional), `INVISIBLE_RECAPTCHA_DATABADGE`(optional),  `INVISIBLE_RECAPTCHA_DEBUG`(optional) to **.env** file.
 
 ```
 INVISIBLE_RECAPTCHA_SITEKEY={siteKey}
 INVISIBLE_RECAPTCHA_SECRETKEY={secretKey}
 INVISIBLE_RECAPTCHA_BADGEHIDE=false
+INVISIBLE_RECAPTCHA_DATABADGE='bottomright'
 INVISIBLE_RECAPTCHA_DEBUG=false
 ```
+> There are three different captcha styles you can set: `bottomright`, `bottomleft`, `inline`
+
 > If you set `INVISIBLE_RECAPTCHA_BADGEHIDE` to true, you can hide the badge logo.
 
 > You can see the binding status of those catcha elements on browser console by setting `INVISIBLE_RECAPTCHA_DEBUG` as true.
@@ -92,6 +95,7 @@ add lines in application/config/config.php :
 $config['recaptcha.sitekey'] = 'keyhere'; 
 $config['recaptcha.secret'] = 'secrethere';
 $config['recaptcha.badgehide'] = FALSE;
+$config['recaptcha.databadge'] = 'bottomritht';
 $config['recaptcha.debug'] = FALSE;
 ```
 
@@ -101,6 +105,7 @@ $data['captcha'] = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha(
     $this->config->item('recaptcha.sitekey'),
     $this->config->item('recaptcha.secret'),
     $this->config->item('recaptcha.badgehide'),
+    $this->config->item('recaptcha.databadge'),
     $this->config->item('recaptcha.debug'),
 );
 ```
@@ -127,8 +132,9 @@ require_once "vendor/autoload.php";
 $siteKey = '';
 $secretKey = '';
 $hideBadge = false;
+$dataBadge = 'bottomright';
 $debug = false;
-$captcha = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($siteKey, $secretKey, $hideBadge, $debug);
+$captcha = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($siteKey, $secretKey, $hideBadge, $dataBadge, $debug);
 
 if (!empty($_POST)) {
     var_dump($captcha->verifyResponse($_POST['g-recaptcha-response']));
@@ -141,6 +147,18 @@ if (!empty($_POST)) {
     <?php echo $captcha->render(); ?>
     <button type="submit">Submit</button>
 </form>
+```
+
+## Take Control of Submit Function
+Use this function only when you need to take all control after clicking submit button. Recaptcha validation will not be triggered in if you return false in this function.
+
+```javascript
+_beforeSubmit = function() {
+    console.log('submit button clicked.');
+    // do other things before captcha validation
+    // return true if you want to continue triggering captcha validation, otherwise return false
+    return false
+}
 ```
 
 ## Customize Submit Function
