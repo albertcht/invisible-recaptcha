@@ -102,14 +102,15 @@ class InvisibleReCaptcha
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
         $html .= 'data-size="invisible" data-callback="_submitForm"></div>';
         $html .= '<script src="' . $this->getCaptchaJs($lang) . '" async defer></script>' . PHP_EOL;
-        $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit;</script>';
+        $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit,_execute=true;</script>';
         $html .= '<script>window.onload=function(){';
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
         $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
         $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
         $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}};';
         $html .= "_captchaForm.addEventListener('submit',";
-        $html .= "function(event){event.preventDefault();grecaptcha.execute();});";
+        $html .= "function(e){e.preventDefault();if(typeof _beforeSubmit==='function'){";
+        $html .= "_execute=_beforeSubmit();}if(_execute){grecaptcha.execute();}});";
         if ($this->debug) {
             $html .= $this->renderDebug();
         }
