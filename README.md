@@ -157,7 +157,7 @@ _beforeSubmit = function() {
     console.log('submit button clicked.');
     // do other things before captcha validation
     // return true if you want to continue triggering captcha validation, otherwise return false
-    return false
+    return false;
 }
 ```
 
