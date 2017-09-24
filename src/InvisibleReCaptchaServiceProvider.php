@@ -37,7 +37,7 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->resolving('view', function () {
+        $this->app->afterResolving('blade.compiler', function () {
             $this->addBladeDirective($this->app['blade.compiler']);
         });
     }
