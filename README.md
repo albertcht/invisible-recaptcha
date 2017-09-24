@@ -150,7 +150,7 @@ if (!empty($_POST)) {
 ```
 
 ## Take Control of Submit Function
-Use this function only when you need to take all control after clicking submit button. Recaptcha validation will not be triggered in if you return false in this function.
+Use this function only when you need to take all control after clicking submit button. Recaptcha validation will not be triggered if you return false in this function.
 
 ```javascript
 _beforeSubmit = function() {
