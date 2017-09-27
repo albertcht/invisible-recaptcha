@@ -34,7 +34,7 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
                 $app['config']['captcha.hideBadge'],
                 $app['config']['captcha.dataBadge'],
                 $app['config']['captcha.debug'],
-                $app['config']['captcha.curl_timeout'],
+                $app['config']['captcha.timeout'],
             );
         });
 
