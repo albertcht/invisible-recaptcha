@@ -63,14 +63,14 @@ class InvisibleReCaptcha
      * @param string $siteKey
      * @param boolean $hideBadge
      */
-    public function __construct($siteKey, $secretKey, $hideBadge = false, $dataBadge = 'bottomright', $debug = false)
+    public function __construct($siteKey, $secretKey, $hideBadge = false, $dataBadge = 'bottomright', $debug = false,$timeout = 5)
     {
         $this->siteKey = $siteKey;
         $this->secretKey = $secretKey;
         $this->hideBadge = $hideBadge;
         $this->dataBadge = $dataBadge;
         $this->debug = $debug;
-        $this->client = new Client(['timeout' => 5]);
+        $this->client = new Client(['timeout' => $timeout]);
     }
 
     /**
