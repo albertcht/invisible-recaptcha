@@ -5,5 +5,6 @@ return [
     'secretKey' => env('INVISIBLE_RECAPTCHA_SECRETKEY'),
     'hideBadge' => env('INVISIBLE_RECAPTCHA_BADGEHIDE', false),
     'dataBadge' => env('INVISIBLE_RECAPTCHA_DATABADGE', 'bottomright'),
-    'debug' => env('INVISIBLE_RECAPTCHA_DEBUG', false)
+    'debug' => env('INVISIBLE_RECAPTCHA_DEBUG', false),
+    'timeout' => env('INVISIBLE_RECAPTCHA_TIMEOUT', 5),
 ];
