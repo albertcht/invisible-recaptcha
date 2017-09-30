@@ -10,16 +10,16 @@ Invisible reCAPTCHA
 Invisible reCAPTCHA is an improved version of reCAPTCHA v2(no captcha).
 In reCAPTCHA v2, users need to click the button: "I'm not a robot" to prove they are human. In invisible reCAPTCHA, there will be not embed a captcha box for users to click. It's totally invisible! Only the badge will show on the buttom of the page to hint users that your website is using this technology. (The badge could be hidden, but not suggested.)
 
+## Notice
+After `version 1.8`, configs part has been refactored. Please pass your options config to `InvisibleRecaptcha` except `siteKey` and `secretKey`.
+
+Please modify your configs parameter if you are not using this package with Laravel after you upgrade to `version 1.8`.
+
 ## Installation
 
 ```
 composer require albertcht/invisible-recaptcha
 ```
-
-## Notice
-After `version 1.8`, configs part has been refactored. Please pass your options config to `InvisibleRecaptcha` except `siteKey` and `secretKey`.
-
-Please modify your configs parameter if you are not using this package with Laravel after you upgrade to `version 1.8`.
 
 ## Laravel 5
 
