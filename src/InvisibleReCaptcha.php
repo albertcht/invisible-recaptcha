@@ -31,25 +31,11 @@ class InvisibleReCaptcha
     protected $secretKey;
 
     /**
-     * The config to determine if hide the badge.
+     * The other config options.
      *
-     * @var boolean
+     * @var array
      */
-    protected $hideBadge;
-
-    /**
-     * Reposition the reCAPTCHA badge.
-     *
-     * @var string
-     */
-    protected $dataBadge;
-
-    /**
-     * The config to determine if show debug info.
-     *
-     * @var boolean
-     */
-    protected $debug;
+    protected $options;
 
     /**
      * @var \GuzzleHttp\Client
@@ -61,16 +47,18 @@ class InvisibleReCaptcha
      *
      * @param string $secretKey
      * @param string $siteKey
-     * @param boolean $hideBadge
+     * @param array $options
      */
-    public function __construct($siteKey, $secretKey, $hideBadge = false, $dataBadge = 'bottomright', $debug = false)
+    public function __construct($siteKey, $secretKey, $options = [])
     {
         $this->siteKey = $siteKey;
         $this->secretKey = $secretKey;
-        $this->hideBadge = $hideBadge;
-        $this->dataBadge = $dataBadge;
-        $this->debug = $debug;
-        $this->client = new Client(['timeout' => 5]);
+        $this->setOptions($options);
+        $this->setClient(
+            new Client([
+                'timeout' => $this->getOption('timeout', 5)
+            ])
+        );
     }
 
     /**
@@ -104,7 +92,7 @@ class InvisibleReCaptcha
     {
         $html = '<script src="' . $this->getPolyfillJs() . '"></script>' . PHP_EOL;
         $html .= '<div id="_g-recaptcha"></div>' . PHP_EOL;
-        if ($this->hideBadge) {
+        if ($this->getOption('hideBadge', false)) {
             $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
         }
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
@@ -119,7 +107,7 @@ class InvisibleReCaptcha
         $html .= "_captchaForm.addEventListener('submit',";
         $html .= "function(e){e.preventDefault();if(typeof _beforeSubmit==='function'){";
         $html .= "_execute=_beforeSubmit();}if(_execute){grecaptcha.execute();}});";
-        if ($this->debug) {
+        if ($this->getOption('debug', false)) {
             $html .= $this->renderDebug();
         }
         $html .= "}</script>" . PHP_EOL;
@@ -228,33 +216,46 @@ class InvisibleReCaptcha
     }
 
     /**
-     * Getter function of hideBadge
+     * Set options
      *
-     * @return strnig
+     * @param array $options
      */
-    public function getHideBadge()
+    public function setOptions($options)
     {
-        return $this->hideBadge;
+        $this->options = $options;
     }
 
     /**
-     * Getter function of dataBadge
+     * Getter function of options
      *
      * @return strnig
      */
-    public function getDataBadge()
+    public function getOptions()
     {
-        return $this->dataBadge;
+        return $this->options;
     }
 
     /**
-     * Getter function of debug
+     * Get default option value for options. (for support under PHP 7.0)
      *
-     * @return strnig
+     * @param string $key
+     * @param string $value
+     *
+     * @return string
      */
-    public function getDebug()
+    public function getOption($key, $value = null)
     {
-        return $this->debug;
+        return array_key_exists($key, $this->options) ? $this->options[$key] : $value;
+    }
+
+    /**
+     * Set guzzle client
+     *
+     * @param \GuzzleHttp\Client $client
+     */
+    public function setClient(Client $client)
+    {
+        $this->client = $client;
     }
 
     /**

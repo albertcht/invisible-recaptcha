@@ -13,8 +13,12 @@ class CaptchaTest extends TestCase
 {
     const SITE_KEY = 'site_key';
     const SECRET_KEY = 'secret_key';
-    const BADGE_HIDE = false;
-    const DEBUG = false;
+    const OPTIONS = [
+        'hideBadge' => false,
+        'dataBadge' => 'bottomright',
+        'timeout' => 5,
+        'debug' => false
+    ];
 
     protected $captcha;
 
@@ -23,8 +27,7 @@ class CaptchaTest extends TestCase
         $this->captcha = new InvisibleReCaptcha(
             static::SITE_KEY,
             static::SECRET_KEY,
-            static::BADGE_HIDE,
-            static::DEBUG
+            static::OPTIONS
         );
     }
 
@@ -32,9 +35,12 @@ class CaptchaTest extends TestCase
     {
         $this->assertEquals(static::SITE_KEY, $this->captcha->getSiteKey());
         $this->assertEquals(static::SECRET_KEY, $this->captcha->getSecretKey());
-        $this->assertEquals(static::BADGE_HIDE, $this->captcha->getHideBadge());
-        $this->assertEquals(static::DEBUG, $this->captcha->getDebug());
         $this->assertTrue($this->captcha->getClient() instanceof \GuzzleHttp\Client);
+    }
+
+    public function testGetOptions()
+    {
+        $this->assertEquals(static::OPTIONS, $this->captcha->getOptions());
     }
 
     public function testGetCaptchaJs()

@@ -31,9 +31,7 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
             return new InvisibleReCaptcha(
                 $app['config']['captcha.siteKey'],
                 $app['config']['captcha.secretKey'],
-                $app['config']['captcha.hideBadge'],
-                $app['config']['captcha.dataBadge'],
-                $app['config']['captcha.debug']
+                $app['config']['captcha.options']
             );
         });
 
