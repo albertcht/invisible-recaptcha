@@ -17,7 +17,8 @@ composer require albertcht/invisible-recaptcha
 ```
 
 ## Notice
-After version 1.8, configs part has been refactored. Please pass your options config to `InvisibleRecaptcha` except `siteKey` and `secretKey`.
+After `version 1.8`, configs part has been refactored. Please pass your options config to `InvisibleRecaptcha` except `siteKey` and `secretKey`.
+Please change your configs parameter if you are not using this package with Laravel after you upgrade to `version 1.8`.
 
 ## Laravel 5
 
