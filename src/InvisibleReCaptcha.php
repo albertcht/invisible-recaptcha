@@ -96,7 +96,7 @@ class InvisibleReCaptcha
             $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
         }
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
-        $html .= 'data-size="invisible" data-callback="_submitForm" data-badge="' . $this->dataBadge . '"></div>';
+        $html .= 'data-size="invisible" data-callback="_submitForm" data-badge="' . $this->getOption('dataBadge', 'bottomright') . '"></div>';
         $html .= '<script src="' . $this->getCaptchaJs($lang) . '" async defer></script>' . PHP_EOL;
         $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit,_execute=true;</script>';
         $html .= '<script>window.onload=function(){';

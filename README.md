@@ -97,7 +97,7 @@ $validate = Validator::make(Input::all(), [
 
 set in application/config/config.php :
 ```php
-$config['composer_autoload'] = TRUE;  //around line 134
+$config['composer_autoload'] = TRUE;
 ```
 
 add lines in application/config/config.php :
