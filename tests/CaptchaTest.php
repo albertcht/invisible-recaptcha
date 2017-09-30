@@ -43,6 +43,14 @@ class CaptchaTest extends TestCase
         $this->assertEquals(static::OPTIONS, $this->captcha->getOptions());
     }
 
+    public function testSetOption()
+    {
+        $this->captcha->setOption('debug', true);
+        $this->captcha->setOption('timeout', 10);
+        $this->assertEquals(10, $this->captcha->getOption('timeout'));
+        $this->assertTrue($this->captcha->getOption('debug'));
+    }
+
     public function testGetCaptchaJs()
     {
         $js = 'https://www.google.com/recaptcha/api.js';

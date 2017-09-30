@@ -226,6 +226,17 @@ class InvisibleReCaptcha
     }
 
     /**
+     * Set option
+     *
+     * @param string $key
+     * @param string $value
+     */
+    public function setOption($key, $value)
+    {
+        $this->options[$key] = $value;
+    }
+
+    /**
      * Getter function of options
      *
      * @return strnig
