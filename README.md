@@ -16,6 +16,9 @@ In reCAPTCHA v2, users need to click the button: "I'm not a robot" to prove they
 composer require albertcht/invisible-recaptcha
 ```
 
+## Notice
+After version 1.8, configs part has been refactored. Please pass your options config to `InvisibleRecaptcha` except `siteKey` and `secretKey`.
+
 ## Laravel 5
 
 ### Setup
@@ -26,19 +29,26 @@ Add ServiceProvider to the providers array in `app/config/app.php`.
 AlbertCht\InvisibleReCaptcha\InvisibleReCaptchaServiceProvider::class,
 ```
 
+> It also supports package discovery for Laravel 5.5.
+
 ### Configuration
 Before you set your config, remember to choose `invisible reCAPTCHA` while applying for keys.
 ![invisible_recaptcha_setting](http://i.imgur.com/zIAlKbY.jpg)
 
-Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY`, `INVISIBLE_RECAPTCHA_BADGEHIDE`(optional), `INVISIBLE_RECAPTCHA_DATABADGE`(optional),  `INVISIBLE_RECAPTCHA_DEBUG`(optional) to **.env** file.
+Add `INVISIBLE_RECAPTCHA_SITEKEY`, `INVISIBLE_RECAPTCHA_SECRETKEY` to **.env** file.
 
 ```
+// required
 INVISIBLE_RECAPTCHA_SITEKEY={siteKey}
 INVISIBLE_RECAPTCHA_SECRETKEY={secretKey}
+
+// optional
 INVISIBLE_RECAPTCHA_BADGEHIDE=false
 INVISIBLE_RECAPTCHA_DATABADGE='bottomright'
+INVISIBLE_RECAPTCHA_TIMEOUT=5
 INVISIBLE_RECAPTCHA_DEBUG=false
 ```
+
 > There are three different captcha styles you can set: `bottomright`, `bottomleft`, `inline`
 
 > If you set `INVISIBLE_RECAPTCHA_BADGEHIDE` to true, you can hide the badge logo.
@@ -87,16 +97,20 @@ $validate = Validator::make(Input::all(), [
 
 set in application/config/config.php :
 ```php
-$config['composer_autoload'] = TRUE;  //around line 134
+$config['composer_autoload'] = TRUE;
 ```
 
 add lines in application/config/config.php :
 ```php
-$config['recaptcha.sitekey'] = 'keyhere'; 
-$config['recaptcha.secret'] = 'secrethere';
-$config['recaptcha.badgehide'] = FALSE;
-$config['recaptcha.databadge'] = 'bottomritht';
-$config['recaptcha.debug'] = FALSE;
+$config['recaptcha.sitekey'] = 'sitekey'; 
+$config['recaptcha.secret'] = 'secretkey';
+// optional
+$config['recaptcha.options'] [
+    'hideBadge' => false,
+    'dataBadge' => 'bottomright',
+    'timeout' => 5,
+    'debug' => false
+];
 ```
 
 In controller, use:
@@ -104,9 +118,7 @@ In controller, use:
 $data['captcha'] = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha(
     $this->config->item('recaptcha.sitekey'),
     $this->config->item('recaptcha.secret'),
-    $this->config->item('recaptcha.badgehide'),
-    $this->config->item('recaptcha.databadge'),
-    $this->config->item('recaptcha.debug'),
+    $this->config->item('recaptcha.options'),
 );
 ```
 
@@ -129,12 +141,19 @@ Checkout example below:
 
 require_once "vendor/autoload.php";
 
-$siteKey = '';
-$secretKey = '';
-$hideBadge = false;
-$dataBadge = 'bottomright';
-$debug = false;
-$captcha = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($siteKey, $secretKey, $hideBadge, $dataBadge, $debug);
+$siteKey = 'sitekey';
+$secretKey = 'secretkey';
+// optional
+$options [
+    'hideBadge' => false,
+    'dataBadge' => 'bottomright',
+    'timeout' => 5,
+    'debug' => false
+];
+$captcha = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($siteKey, $secretKey, $options);
+
+// you can override single option config like this
+$captcha->setOption('debug', true);
 
 if (!empty($_POST)) {
     var_dump($captcha->verifyResponse($_POST['g-recaptcha-response']));

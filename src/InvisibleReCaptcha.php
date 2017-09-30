@@ -31,25 +31,11 @@ class InvisibleReCaptcha
     protected $secretKey;
 
     /**
-     * The config to determine if hide the badge.
+     * The other config options.
      *
-     * @var boolean
+     * @var array
      */
-    protected $hideBadge;
-
-    /**
-     * Reposition the reCAPTCHA badge.
-     *
-     * @var string
-     */
-    protected $dataBadge;
-
-    /**
-     * The config to determine if show debug info.
-     *
-     * @var boolean
-     */
-    protected $debug;
+    protected $options;
 
     /**
      * @var \GuzzleHttp\Client
@@ -61,16 +47,18 @@ class InvisibleReCaptcha
      *
      * @param string $secretKey
      * @param string $siteKey
-     * @param boolean $hideBadge
+     * @param array $options
      */
-    public function __construct($siteKey, $secretKey, $hideBadge = false, $dataBadge = 'bottomright', $debug = false)
+    public function __construct($siteKey, $secretKey, $options = [])
     {
         $this->siteKey = $siteKey;
         $this->secretKey = $secretKey;
-        $this->hideBadge = $hideBadge;
-        $this->dataBadge = $dataBadge;
-        $this->debug = $debug;
-        $this->client = new Client(['timeout' => 5]);
+        $this->setOptions($options);
+        $this->setClient(
+            new Client([
+                'timeout' => $this->getOption('timeout', 5)
+            ])
+        );
     }
 
     /**
@@ -104,11 +92,11 @@ class InvisibleReCaptcha
     {
         $html = '<script src="' . $this->getPolyfillJs() . '"></script>' . PHP_EOL;
         $html .= '<div id="_g-recaptcha"></div>' . PHP_EOL;
-        if ($this->hideBadge) {
+        if ($this->getOption('hideBadge', false)) {
             $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
         }
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
-        $html .= 'data-size="invisible" data-callback="_submitForm" data-badge="' . $this->dataBadge . '"></div>';
+        $html .= 'data-size="invisible" data-callback="_submitForm" data-badge="' . $this->getOption('dataBadge', 'bottomright') . '"></div>';
         $html .= '<script src="' . $this->getCaptchaJs($lang) . '" async defer></script>' . PHP_EOL;
         $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit,_execute=true;</script>';
         $html .= '<script>window.onload=function(){';
@@ -119,7 +107,7 @@ class InvisibleReCaptcha
         $html .= "_captchaForm.addEventListener('submit',";
         $html .= "function(e){e.preventDefault();if(typeof _beforeSubmit==='function'){";
         $html .= "_execute=_beforeSubmit();}if(_execute){grecaptcha.execute();}});";
-        if ($this->debug) {
+        if ($this->getOption('debug', false)) {
             $html .= $this->renderDebug();
         }
         $html .= "}</script>" . PHP_EOL;
@@ -228,33 +216,57 @@ class InvisibleReCaptcha
     }
 
     /**
-     * Getter function of hideBadge
+     * Set options
      *
-     * @return strnig
+     * @param array $options
      */
-    public function getHideBadge()
+    public function setOptions($options)
     {
-        return $this->hideBadge;
+        $this->options = $options;
     }
 
     /**
-     * Getter function of dataBadge
+     * Set option
      *
-     * @return strnig
+     * @param string $key
+     * @param string $value
      */
-    public function getDataBadge()
+    public function setOption($key, $value)
     {
-        return $this->dataBadge;
+        $this->options[$key] = $value;
     }
 
     /**
-     * Getter function of debug
+     * Getter function of options
      *
      * @return strnig
      */
-    public function getDebug()
+    public function getOptions()
     {
-        return $this->debug;
+        return $this->options;
+    }
+
+    /**
+     * Get default option value for options. (for support under PHP 7.0)
+     *
+     * @param string $key
+     * @param string $value
+     *
+     * @return string
+     */
+    public function getOption($key, $value = null)
+    {
+        return array_key_exists($key, $this->options) ? $this->options[$key] : $value;
+    }
+
+    /**
+     * Set guzzle client
+     *
+     * @param \GuzzleHttp\Client $client
+     */
+    public function setClient(Client $client)
+    {
+        $this->client = $client;
     }
 
     /**
