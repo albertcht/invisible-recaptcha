@@ -99,6 +99,21 @@ class InvisibleReCaptcha
         $html .= 'data-size="invisible" data-callback="_submitForm" data-badge="' . $this->getOption('dataBadge', 'bottomright') . '"></div>';
         $html .= '<script src="' . $this->getCaptchaJs($lang) . '" async defer></script>' . PHP_EOL;
         $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit,_execute=true;</script>';
+		//beginn ie patch for closest
+		$html.= '<script>if (window.Element && !Element.prototype.closest) {';
+		$html.= 'Element.prototype.closest = ';
+		$html.= 'function(s) {';
+		$html.= '	var matches = (this.document || this.ownerDocument).querySelectorAll(s),';
+		$html.= '		i,';
+		$html.= '		el = this;';
+		$html.= '	do {';
+		$html.= '		i = matches.length;';
+		$html.= '		while (--i >= 0 && matches.item(i) !== el) {};';
+		$html.= '	} while ((i < 0) && (el = el.parentElement)); ';
+		$html.= '	return el;';
+		$html.= '};';
+		$html.= '}';
+		//end ie patch for closest		
         $html .= '<script>window.onload=function(){';
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
         $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
