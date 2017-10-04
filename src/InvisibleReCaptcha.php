@@ -113,6 +113,7 @@ class InvisibleReCaptcha
 		$html.= '	return el;';
 		$html.= '};';
 		$html.= '}';
+		$html.= '</script>';
 		//end ie patch for closest		
         $html .= '<script>window.onload=function(){';
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
