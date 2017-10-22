@@ -39,6 +39,12 @@ Invisible reCAPTCHA
 ```
 > In this branch, you can cutomize your submit behavior by listening a captcha event.
 
+##Example Repository
+
+Repo: https://github.com/albertcht/invisible-recaptcha-example/tree/multi-forms
+
+This repo demonstrates how to use this package with ajax way.
+
 ## Diffs
 * There's no `INVISIBLE_RECAPTCHA_DEBUG` config in this branch.
 * This package rely on `jquery` instead of `pilyfill.js`, and you have to include `jquery` by yourself before you call the captcha.
