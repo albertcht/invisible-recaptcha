@@ -39,7 +39,7 @@ Invisible reCAPTCHA
 ```
 > In this branch, you can cutomize your submit behavior by listening a captcha event.
 
-##Example Repository
+## Example Repository
 
 Repo: https://github.com/albertcht/invisible-recaptcha-example/tree/multi-forms
 
