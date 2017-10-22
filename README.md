@@ -218,6 +218,10 @@ _submitEvent = function() {
     });
 };
 ```
+## Example Repository
+Repo: https://github.com/albertcht/invisible-recaptcha-example
+
+This repo demonstrates how to use this package with ajax way.
 
 ## Showcases
 
