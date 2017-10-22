@@ -102,14 +102,14 @@ class InvisibleReCaptcha
 
     public function initRender($lang)
     {
-        $html = '<script src="' . $this->getJQueryJs() . '"></script>' . PHP_EOL;
+        // $html = '<script src="' . $this->getJQueryJs() . '"></script>' . PHP_EOL;
         $html .= '<script>var _renderedTimes,_captchaCallback,_captchaForms,_submitForm,_submitBtn;</script>';
         $html .= '<script>var _submitAction=true,_captchaForm;</script>';
         $html .= "<script>$.getScript('{$this->getCaptchaJs($lang)}').done(function(data,status,jqxhr){";
         $html .= '_renderedTimes=$("._g-recaptcha").length;_captchaForms=$("._g-recaptcha").closest("form");';
         $html .= '_captchaForms.each(function(){$(this)[0].addEventListener("submit",function(e){e.preventDefault();';
         $html .= '_captchaForm=$(this);_submitBtn=$(this).find(":submit");grecaptcha.execute();});});';
-        $html .= '_submitForm=function(){_submitBtn.trigger("captcha");if(_submitAction){_captchaForm.submit();}};';
+        $html .= '_submitForm=function(){_submitBtn.trigger("captcha");grecaptcha.reset();if(_submitAction){_captchaForm.submit();}};';
         $html .= '_captchaCallback=function(){grecaptcha.render("_g-recaptcha_"+_renderedTimes,';
         $html .= "{sitekey:'{$this->siteKey}',size:'invisible',callback:_submitForm});}";
         $html .= '});</script>' . PHP_EOL;
