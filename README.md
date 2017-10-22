@@ -21,6 +21,8 @@ Invisible reCAPTCHA
 {!! Form::submit('Sumbit2', ['id'=>'s2']) !!}
 {!! Form::close() !!}
 ```
+> **Please include jquery.js manually before you calling the captcha.**
+
 > Just call captcha function in forms directly, it will render only one captcha and all the forms will share the same captcha validation.
 
 ```javascript
@@ -36,6 +38,6 @@ Invisible reCAPTCHA
 
 ## Diffs
 * There's no `INVISIBLE_RECAPTCHA_DEBUG` config in this branch.
-* This package will include `jquery 3.2.1` instead of `pilyfill.js`.
+* This package rely on `jquery` instead of `pilyfill.js`, and you have to include `jquery` by yourself before you call the captcha.
 
 ### This branch is still under develop, welcome for any deg report or advice.
