@@ -42,13 +42,6 @@ class CaptchaTest extends TestCase
         $this->assertEquals($js . '&hl=us', $this->captcha->getCaptchaJs('us'));
     }
 
-    public function testJqueryJs()
-    {
-        $js = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js';
-
-        $this->assertEquals($js, $this->captcha->getJQueryJs());
-    }
-
     public function testBladeDirective()
     {
         $app = Container::getInstance();

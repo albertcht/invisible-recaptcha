@@ -9,7 +9,6 @@ class InvisibleReCaptcha
 {
     const API_URI = 'https://www.google.com/recaptcha/api.js';
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
-    const JQUERY_URI = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js';
 
     /**
      * The reCaptcha site key.
@@ -73,16 +72,6 @@ class InvisibleReCaptcha
     }
 
     /**
-     * Get jQuery js
-     *
-     * @return string
-     */
-    public function getJQueryJs()
-    {
-        return static::JQUERY_URI;
-    }
-
-    /**
      * Render HTML reCaptcha by optional language param.
      *
      * @return string
@@ -102,8 +91,7 @@ class InvisibleReCaptcha
 
     public function initRender($lang)
     {
-        // $html = '<script src="' . $this->getJQueryJs() . '"></script>' . PHP_EOL;
-        $html .= '<script>var _renderedTimes,_captchaCallback,_captchaForms,_submitForm,_submitBtn;</script>';
+        $html = '<script>var _renderedTimes,_captchaCallback,_captchaForms,_submitForm,_submitBtn;</script>';
         $html .= '<script>var _submitAction=true,_captchaForm;</script>';
         $html .= "<script>$.getScript('{$this->getCaptchaJs($lang)}').done(function(data,status,jqxhr){";
         $html .= '_renderedTimes=$("._g-recaptcha").length;_captchaForms=$("._g-recaptcha").closest("form");';
