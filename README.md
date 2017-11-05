@@ -2,6 +2,7 @@ Invisible reCAPTCHA
 ==========
 ![php-badge](https://img.shields.io/badge/php-%3E%3D%205.6-8892BF.svg)
 [![packagist-badge](https://img.shields.io/packagist/v/albertcht/invisible-recaptcha.svg)](https://packagist.org/packages/albertcht/invisible-recaptcha)
+[![Total Downloads](https://poser.pugx.org/albertcht/invisible-recaptcha/downloads)](https://packagist.org/packages/albertcht/invisible-recaptcha)
 [![travis-badge](https://api.travis-ci.org/albertcht/invisible-recaptcha.svg?branch=master)](https://travis-ci.org/albertcht/invisible-recaptcha)
 
 ![invisible_recaptcha_demo](http://i.imgur.com/1dZ9XKn.png)
