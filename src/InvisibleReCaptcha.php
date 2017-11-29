@@ -102,7 +102,7 @@ class InvisibleReCaptcha
         $html .= '<script>window.onload=function(){';
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
         $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
-        $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
+        $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent(_captchaForm);';
         $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}};';
         $html .= "_captchaForm.addEventListener('submit',";
         $html .= "function(e){e.preventDefault();if(typeof _beforeSubmit==='function'){";
