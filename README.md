@@ -196,7 +196,7 @@ _submitEvent = function() {
     _submitForm();
 }
 ```
-Here's am example to use an ajax submit (using jquery selector)
+Here's an example to use an ajax submit (using jquery selector)
 ```javascript
 _submitEvent = function() {
     $.ajax({
