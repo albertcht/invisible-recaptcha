@@ -73,7 +73,7 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
     public function addBladeDirective(BladeCompiler $blade)
     {
         $blade->directive('captcha', function ($lang) {
-            return "<?php echo app('captcha')->render(" . ($lang ? "'$lang'" : '') . '); ?>';
+            return "<?php echo app('captcha')->render({$lang}); ?>";
         });
     }
 }
