@@ -79,10 +79,10 @@ Before you render the captcha, please keep those notices in mind:
 With custom language support:
 
 ```php
-{!! app('captcha')->render($lang = null); !!}
+{!! app('captcha')->render('en'); !!}
 
 // or you can use this in blade
-@captcha($lang = null)
+@captcha('en')
 ```
 
 ##### Validation
