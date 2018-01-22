@@ -9,6 +9,12 @@ Invisible reCAPTCHA
 * In most of cases, there should be only one captcha in your page. You should use master branch normally.
 * **Do not use multiple captchas in one page for protecting every form far from bots**, it will cause terrible user experience.
 
+## Installation
+
+```
+composer require albertcht/invisible-recaptcha:dev-multi-forms
+```
+
 ## Usage Example
 ```php
 // you must include `jquery` beforehand
