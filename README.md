@@ -73,7 +73,7 @@ Before you render the captcha, please keep those notices in mind:
 {!! app('captcha')->render(); !!}
 
 // or you can use this in blade
-@captcha()
+@captcha
 ```
 
 With custom language support:
