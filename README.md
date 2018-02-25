@@ -109,7 +109,7 @@ add lines in application/config/config.php :
 $config['recaptcha.sitekey'] = 'sitekey'; 
 $config['recaptcha.secret'] = 'secretkey';
 // optional
-$config['recaptcha.options'] [
+$config['recaptcha.options'] = [
     'hideBadge' => false,
     'dataBadge' => 'bottomright',
     'timeout' => 5,
