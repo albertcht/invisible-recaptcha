@@ -133,7 +133,7 @@ In view, in your form:
 
 Then back in your controller you can verify it:
 ```php
-$captcha->verifyResponse($_POST['g-recaptcha-response']);
+$captcha->verifyResponse($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
 ```
 
 ## Without Laravel or CodeIgniter
@@ -160,7 +160,7 @@ $captcha = new \AlbertCht\InvisibleReCaptcha\InvisibleReCaptcha($siteKey, $secre
 $captcha->setOption('debug', true);
 
 if (!empty($_POST)) {
-    var_dump($captcha->verifyResponse($_POST['g-recaptcha-response']));
+    var_dump($captcha->verifyResponse($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']));
     exit();
 }
 
