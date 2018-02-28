@@ -10,6 +10,7 @@ class InvisibleReCaptcha
 
     const API_URI = 'https://www.google.com/recaptcha/api.js';
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
+    const POLYFILL_URI = 'https://cdn.polyfill.io/v2/polyfill.min.js';
 
     /**
      * The reCaptcha site key.
@@ -80,14 +81,14 @@ class InvisibleReCaptcha
 
     /**
      * Render HTML reCaptcha by optional language param.
-     *
+     *  TODO: render HMTL through template ?
      * @return string
      */
     public function render($lang = null)
     {
         $key = uniqid();
         $html = '';
-        
+
         if ($this->getOption('hideBadge', false))
         {
             $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
@@ -95,30 +96,34 @@ class InvisibleReCaptcha
 
         $html .= "<script src='https://www.google.com/recaptcha/api.js?render=explicit&hl=$lang' async defer></script>";
         $html .= "<div class='g-recaptcha' id='$key' data-sitekey='$this->siteKey' data-size='invisible' data-badge='bottomleft'></div>";
-        $html .= '<script>
-            window.onload = function () {
+        $html .= $this->getJsCode();
+
+        return $html;
+    }
+
+    /**
+     * Return Js Logic
+     * @return string
+     */
+    protected function getJsCode()
+    {
+        return '<script>window.onload = function () {
                 var widgets = {};
-        
-                $(".g-recaptcha").each(function () {
+                    $(".g-recaptcha").each(function () {
                     var object = $(this);
-        
                     widgets[object.attr("id")] = grecaptcha.render(object.attr("id"), {
                         "callback": function (token) {
                             object.parents("form").find(".g-recaptcha-response").val(token);
                             object.parents("form").submit();
                         }
                     });
-        
                     $("input[type=\'submit\']", object.parents("form")).on("click", function(e){
                         e.preventDefault();
                         grecaptcha.execute(widgets[object.attr("id")]);
                     });
                 });
             };
-        </script>
-        ';
-
-        return $html;
+        </script>';
     }
 
     /**
