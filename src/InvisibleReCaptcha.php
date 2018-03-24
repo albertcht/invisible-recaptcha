@@ -7,14 +7,10 @@ use GuzzleHttp\Client;
 
 class InvisibleReCaptcha
 {
+
     const API_URI = 'https://www.google.com/recaptcha/api.js';
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
     const POLYFILL_URI = 'https://cdn.polyfill.io/v2/polyfill.min.js';
-    const DEBUG_ELEMENTS = [
-        '_submitForm',
-        '_captchaForm',
-        '_captchaSubmit'
-    ];
 
     /**
      * The reCaptcha site key.
@@ -85,60 +81,49 @@ class InvisibleReCaptcha
 
     /**
      * Render HTML reCaptcha by optional language param.
-     *
+     *  TODO: render HMTL through template ?
      * @return string
      */
     public function render($lang = null)
     {
-        $html = '<script src="' . $this->getPolyfillJs() . '"></script>' . PHP_EOL;
-        $html .= '<div id="_g-recaptcha"></div>' . PHP_EOL;
-        if ($this->getOption('hideBadge', false)) {
+        $key = uniqid();
+        $html = '';
+
+        if ($this->getOption('hideBadge', false))
+        {
             $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
         }
-        $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
-        $html .= 'data-size="invisible" data-callback="_submitForm" data-badge="' . $this->getOption('dataBadge', 'bottomright') . '"></div>';
-        $html .= '<script src="' . $this->getCaptchaJs($lang) . '" async defer></script>' . PHP_EOL;
-        $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit,_execute=true;</script>';
-        $html .= '<script>window.onload=function(){';
-        $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
-        $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
-        $html .= '_submitForm=function(){if(typeof _submitEvent==="function"){_submitEvent();';
-        $html .= 'grecaptcha.reset();}else{_captchaForm.submit();}};';
-        $html .= "_captchaForm.addEventListener('submit',";
-        $html .= "function(e){e.preventDefault();if(typeof _beforeSubmit==='function'){";
-        $html .= "_execute=_beforeSubmit();}if(_execute){grecaptcha.execute();}});";
-        if ($this->getOption('debug', false)) {
-            $html .= $this->renderDebug();
-        }
-        $html .= "}</script>" . PHP_EOL;
+
+        $html .= "<script src='https://www.google.com/recaptcha/api.js?render=explicit&hl=$lang' async defer></script>";
+        $html .= "<div class='g-recaptcha' id='$key' data-sitekey='$this->siteKey' data-size='invisible' data-badge='bottomleft'></div>";
+        $html .= $this->getJsCode();
 
         return $html;
     }
 
     /**
-     * Get debug javascript code.
-     *
+     * Return Js Logic
      * @return string
      */
-    public function renderDebug()
+    protected function getJsCode()
     {
-        $html = '';
-        foreach (static::DEBUG_ELEMENTS as $element) {
-            $html .= $this->consoleLog('"Checking element binding of ' . $element . '..."');
-            $html .= $this->consoleLog($element . '!==undefined');
-        }
-
-        return $html;
-    }
-
-    /**
-     * Get console.log function for javascript code.
-     *
-     * @return string
-     */
-    public function consoleLog($string)
-    {
-        return "console.log({$string});";
+        return '<script>window.onload = function () {
+                var widgets = {};
+                    $(".g-recaptcha").each(function () {
+                    var object = $(this);
+                    widgets[object.attr("id")] = grecaptcha.render(object.attr("id"), {
+                        "callback": function (token) {
+                            object.parents("form").find(".g-recaptcha-response").val(token);
+                            object.parents("form").submit();
+                        }
+                    });
+                    $("input[type=\'submit\']", object.parents("form")).on("click", function(e){
+                        e.preventDefault();
+                        grecaptcha.execute(widgets[object.attr("id")]);
+                    });
+                });
+            };
+        </script>';
     }
 
     /**
@@ -151,12 +136,13 @@ class InvisibleReCaptcha
      */
     public function verifyResponse($response, $clientIp)
     {
-        if (empty($response)) {
+        if (empty($response))
+        {
             return false;
         }
 
         $response = $this->sendVerifyRequest([
-            'secret' => $this->secretKey,
+            'secret'   => $this->secretKey,
             'remoteip' => $clientIp,
             'response' => $response
         ]);
