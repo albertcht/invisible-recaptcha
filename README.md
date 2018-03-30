@@ -176,9 +176,10 @@ if (!empty($_POST)) {
 Use this function only when you need to take all control after clicking submit button. Recaptcha validation will not be triggered if you return false in this function.
 
 ```javascript
-_beforeSubmit = function() {
+_beforeSubmit = function(e) {
     console.log('submit button clicked.');
     // do other things before captcha validation
+    // e represents reference to original form submit event
     // return true if you want to continue triggering captcha validation, otherwise return false
     return false;
 }
