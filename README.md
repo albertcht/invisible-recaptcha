@@ -85,7 +85,7 @@ With custom language support:
 @captcha('en')
 ```
 
-###### Usage with Javascript frameworks like VueJS:
+##### Usage with Javascript frameworks like VueJS:
 
 The `render()` process includes three distinct sections that can be rendered separately incase you're using the package with a framework like VueJS which throws console errors when `<script>` tags are included in templates.
 
