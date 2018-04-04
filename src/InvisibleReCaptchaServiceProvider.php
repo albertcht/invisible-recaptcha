@@ -75,5 +75,14 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
         $blade->directive('captcha', function ($lang) {
             return "<?php echo app('captcha')->render({$lang}); ?>";
         });
+        $blade->directive('captchaPolyfill', function () {
+            return "<?php echo app('captcha')->renderPolyfill({$lang}); ?>";
+        });
+        $blade->directive('captchaHTML', function () {
+            return "<?php echo app('captcha')->renderCaptchaHTML(); ?>";
+        });
+        $blade->directive('captchaScripts', function ($lang) {
+            return "<?php echo app('captcha')->renderFooterJS({$lang}); ?>";
+        });
     }
 }
