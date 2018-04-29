@@ -233,3 +233,8 @@ This repo demonstrates how to use this package with ajax way.
 
 * anhskohbo (the author of no-captcha package)
 * [Contributors](https://github.com/albertcht/invisible-recaptcha/graphs/contributors)
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/albertcht/invisible-recaptcha/badge.svg?style=beer-square)](https://beerpay.io/albertcht/invisible-recaptcha)  [![Beerpay](https://beerpay.io/albertcht/invisible-recaptcha/make-wish.svg?style=flat-square)](https://beerpay.io/albertcht/invisible-recaptcha?focus=wish)
