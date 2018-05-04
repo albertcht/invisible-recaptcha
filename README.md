@@ -37,7 +37,7 @@ composer require albertcht/invisible-recaptcha:dev-multi-forms
 ```javascript
 <script type="text/javascript">
     $('#s2').on('captcha', function(e) {
-        // set it as false if your don't want to submit your from directly
+        // set it to false if you don't want to submit your from directly
         _submitAction = false;
         // do other stuff
     });
