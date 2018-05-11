@@ -198,7 +198,7 @@ class InvisibleReCaptcha
     /**
      * Getter function of site key
      *
-     * @return strnig
+     * @return string
      */
     public function getSiteKey()
     {
@@ -208,7 +208,7 @@ class InvisibleReCaptcha
     /**
      * Getter function of secret key
      *
-     * @return strnig
+     * @return string
      */
     public function getSecretKey()
     {
@@ -239,7 +239,7 @@ class InvisibleReCaptcha
     /**
      * Getter function of options
      *
-     * @return strnig
+     * @return string
      */
     public function getOptions()
     {
@@ -272,7 +272,7 @@ class InvisibleReCaptcha
     /**
      * Getter function of guzzle client
      *
-     * @return strnig
+     * @return string
      */
     public function getClient()
     {
