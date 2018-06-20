@@ -15,7 +15,6 @@ In reCAPTCHA v2, users need to click the button: "I'm not a robot" to prove they
 ## Notice
 
 * The master branch doesn't support multi captchas feature, please use `multi-forms` branch if you need it. (**Most of the time you are misusing recaptcha when you try to put multiple captchas in one page.**)
-* Please modify your configs parameter if you are not using this package with Laravel after you upgrade to `version 1.8`.
 
 ## Installation
 
@@ -90,7 +89,6 @@ With custom language support:
 Add `'g-recaptcha-response' => 'required|captcha'` to rules array.
 
 ```php
-
 $validate = Validator::make(Input::all(), [
     'g-recaptcha-response' => 'required|captcha'
 ]);
