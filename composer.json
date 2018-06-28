@@ -1,9 +1,13 @@
 {
-    "name": "albertcht/invisible-recaptcha",
+    "name": "danmatthews/invisible-recaptcha",
     "description": "Invisible reCAPTCHA For Laravel.",
     "keywords": ["recaptcha", "no-captcha", "captcha", "invisible", "invisible-recaptcha", "laravel", "laravel5", "php"],
     "license": "MIT",
     "authors": [
+        {
+            "name": "Dan Matthews",
+            "homepage": "https://danmatthews.me"
+        },
         {
             "name": "Albert Chen",
             "homepage": "https://www.albert-chen.com"
