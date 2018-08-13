@@ -97,7 +97,7 @@ class InvisibleReCaptcha
         $html .= '_renderedTimes=$("._g-recaptcha").length;_captchaForms=$("._g-recaptcha").closest("form");';
         $html .= '_captchaForms.each(function(){$(this)[0].addEventListener("submit",function(e){e.preventDefault();';
         $html .= '_captchaForm=$(this);_submitBtn=$(this).find(":submit");grecaptcha.execute();});});';
-        $html .= '_submitForm=function(){_submitBtn.trigger("captcha");grecaptcha.reset();if(_submitAction){_captchaForm.submit();}};';
+        $html .= '_submitForm=function(){_submitBtn.trigger("captcha");if(_submitAction){_captchaForm.submit();}grecaptcha.reset();};';
         $html .= '_captchaCallback=function(){grecaptcha.render("_g-recaptcha_"+_renderedTimes,';
         $html .= "{sitekey:'{$this->siteKey}',size:'invisible',callback:_submitForm});}";
         $html .= '});</script>' . PHP_EOL;
