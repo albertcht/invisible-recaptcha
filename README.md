@@ -146,7 +146,7 @@ require_once "vendor/autoload.php";
 $siteKey = 'sitekey';
 $secretKey = 'secretkey';
 // optional
-$options [
+$options = [
     'hideBadge' => false,
     'dataBadge' => 'bottomright',
     'timeout' => 5,
