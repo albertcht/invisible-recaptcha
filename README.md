@@ -15,7 +15,6 @@ In reCAPTCHA v2, users need to click the button: "I'm not a robot" to prove they
 ## Notice
 
 * The master branch doesn't support multi captchas feature, please use `multi-forms` branch if you need it. (**Most of the time you are misusing recaptcha when you try to put multiple captchas in one page.**)
-* Please modify your configs parameter if you are not using this package with Laravel after you upgrade to `version 1.8`.
 
 ## Installation
 
@@ -123,7 +122,6 @@ And you can render the neccessary `<script>` tags including the optional languag
 Add `'g-recaptcha-response' => 'required|captcha'` to rules array.
 
 ```php
-
 $validate = Validator::make(Input::all(), [
     'g-recaptcha-response' => 'required|captcha'
 ]);
@@ -181,7 +179,7 @@ require_once "vendor/autoload.php";
 $siteKey = 'sitekey';
 $secretKey = 'secretkey';
 // optional
-$options [
+$options = [
     'hideBadge' => false,
     'dataBadge' => 'bottomright',
     'timeout' => 5,
@@ -209,9 +207,10 @@ if (!empty($_POST)) {
 Use this function only when you need to take all control after clicking submit button. Recaptcha validation will not be triggered if you return false in this function.
 
 ```javascript
-_beforeSubmit = function() {
+_beforeSubmit = function(e) {
     console.log('submit button clicked.');
     // do other things before captcha validation
+    // e represents reference to original form submit event
     // return true if you want to continue triggering captcha validation, otherwise return false
     return false;
 }
@@ -265,3 +264,8 @@ This repo demonstrates how to use this package with ajax way.
 
 * anhskohbo (the author of no-captcha package)
 * [Contributors](https://github.com/albertcht/invisible-recaptcha/graphs/contributors)
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/albertcht/invisible-recaptcha/badge.svg?style=beer-square)](https://beerpay.io/albertcht/invisible-recaptcha)  [![Beerpay](https://beerpay.io/albertcht/invisible-recaptcha/make-wish.svg?style=flat-square)](https://beerpay.io/albertcht/invisible-recaptcha?focus=wish)
