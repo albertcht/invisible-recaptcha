@@ -70,7 +70,7 @@ Before you render the captcha, please keep those notices in mind:
 ##### Display reCAPTCHA in Your View
 
 ```php
-{!! app('captcha')->render(); !!}
+{!! app('captcha')->render() !!}
 
 // or you can use this in blade
 @captcha
@@ -79,7 +79,7 @@ Before you render the captcha, please keep those notices in mind:
 With custom language support:
 
 ```php
-{!! app('captcha')->render('en'); !!}
+{!! app('captcha')->render('en') !!}
 
 // or you can use this in blade
 @captcha('en')
@@ -92,7 +92,7 @@ The `render()` process includes three distinct sections that can be rendered sep
 You can render the polyfill (do this somewhere like the head of your HTML:)
 
 ```php
-{!! app('captcha')->renderPolyfill(); !!}
+{!! app('captcha')->renderPolyfill() !!}
 // Or with blade directive:
 @captchaPolyfill
 ```
@@ -100,7 +100,7 @@ You can render the polyfill (do this somewhere like the head of your HTML:)
 You can render the HTML using this following, this needs to be INSIDE your `<form>` tag:
 
 ```php
-{!! app('captcha')->renderCaptchaHTML(); !!}
+{!! app('captcha')->renderCaptchaHTML() !!}
 // Or with blade directive:
 @captchaHTML
 ```
@@ -109,7 +109,7 @@ And you can render the neccessary `<script>` tags including the optional languag
 
 ```php
 // The argument is optional.
-{!! app('captcha')->renderFooterJS('en'); !!}
+{!! app('captcha')->renderFooterJS('en') !!}
 
 // Or with blade directive:
 @captchaScripts
