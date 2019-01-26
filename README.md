@@ -62,14 +62,14 @@ INVISIBLE_RECAPTCHA_DEBUG=false
 
 Before you render the captcha, please keep those notices in mind:
 
-* `render()` function needs to be called within a form element.
+* `render()` or `renderHTML()` function needs to be called within a form element.
 * You have to ensure the `type` attribute of your submit button has to be `submit`.
 * There can only be one submit button in your form.
 
 ##### Display reCAPTCHA in Your View
 
 ```php
-{!! app('captcha')->render(); !!}
+{!! app('captcha')->render() !!}
 
 // or you can use this in blade
 @captcha
@@ -78,10 +78,43 @@ Before you render the captcha, please keep those notices in mind:
 With custom language support:
 
 ```php
-{!! app('captcha')->render('en'); !!}
+{!! app('captcha')->render('en') !!}
 
 // or you can use this in blade
 @captcha('en')
+```
+
+##### Usage with Javascript frameworks like VueJS:
+
+The `render()` process includes three distinct sections that can be rendered separately incase you're using the package with a framework like VueJS which throws console errors when `<script>` tags are included in templates.
+
+You can render the polyfill (do this somewhere like the head of your HTML:)
+
+```php
+{!! app('captcha')->renderPolyfill() !!}
+// Or with blade directive:
+@captchaPolyfill
+```
+
+You can render the HTML using this following, this needs to be INSIDE your `<form>` tag:
+
+```php
+{!! app('captcha')->renderCaptchaHTML() !!}
+// Or with blade directive:
+@captchaHTML
+```
+
+And you can render the neccessary `<script>` tags including the optional language support by using:
+
+```php
+// The argument is optional.
+{!! app('captcha')->renderFooterJS('en') !!}
+
+// Or with blade directive:
+@captchaScripts
+// blade directive, with language support:
+@captchaScripts('en')
+
 ```
 
 ##### Validation
