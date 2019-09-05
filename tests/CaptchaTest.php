@@ -22,7 +22,7 @@ class CaptchaTest extends TestCase
 
     protected $captcha;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->captcha = new InvisibleReCaptcha(
             static::SITE_KEY,
