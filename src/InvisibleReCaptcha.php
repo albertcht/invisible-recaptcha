@@ -191,11 +191,16 @@ class InvisibleReCaptcha
             return false;
         }
 
-        $response = $this->sendVerifyRequest([
-            'secret' => $this->secretKey,
-            'remoteip' => $clientIp,
-            'response' => $response
-        ]);
+        try {
+            $response = $this->sendVerifyRequest([
+                'secret'   => $this->secretKey,
+                'remoteip' => $clientIp,
+                'response' => $response
+            ]);
+        } catch (\GuzzleHttp\Exception\GuzzleException $exception) {
+            \Illuminate\Support\Facades\Log::error($exception->getMessage());
+            return true;
+        }
 
         return isset($response['success']) && $response['success'] === true;
     }
