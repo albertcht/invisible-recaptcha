@@ -135,7 +135,7 @@ class InvisibleReCaptcha
         $html .= "<script>window.addEventListener('load', _loadCaptcha);" . PHP_EOL;
         $html .= "function _loadCaptcha(){";
         if ($this->getOption('hideBadge', false)) {
-            $html .= "document.querySelector('.grecaptcha-badge').style = 'display:none;!important'" . PHP_EOL;
+            $html .= "document.querySelector('.grecaptcha-badge').style = 'display:none !important;';" . PHP_EOL;
         }
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
         $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
