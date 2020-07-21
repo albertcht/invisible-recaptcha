@@ -1,5 +1,5 @@
 {
-    "name": "albertcht/invisible-recaptcha",
+    "name": "serviceright/invisible-recaptcha",
     "description": "Invisible reCAPTCHA For Laravel.",
     "keywords": ["recaptcha", "no-captcha", "captcha", "invisible", "invisible-recaptcha", "laravel", "laravel5", "php"],
     "license": "MIT",
