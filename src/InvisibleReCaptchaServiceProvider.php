@@ -82,7 +82,7 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
             return "<?php echo app('captcha')->renderCaptchaHTML(); ?>";
         });
         $blade->directive('captchaScripts', function ($lang, $nonce) {
-            return "<?php echo app('captcha')->renderFooterJS({$lang, $nonce}); ?>";
+            return "<?php echo app('captcha')->renderFooterJS({$lang}, {$nonce}); ?>";
         });
     }
 }
