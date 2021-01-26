@@ -88,11 +88,11 @@ class InvisibleReCaptcha
      *
      * @return string
      */
-    public function render($lang = null)
+    public function render($lang = null, $nonce = null)
     {
         $html = $this->renderPolyfill();
         $html .= $this->renderCaptchaHTML();
-        $html .= $this->renderFooterJS($lang);
+        $html .= $this->renderFooterJS($lang, $nonce);
         return $html;
     }
 
@@ -128,9 +128,13 @@ class InvisibleReCaptcha
      *
      * @return string
      */
-    public function renderFooterJS($lang = null)
+    public function renderFooterJS($lang = null, $nonce = null)
     {
-        $html = '<script src="' . $this->getCaptchaJs($lang) . '" async defer></script>' . PHP_EOL;
+        $html = '<script src="' . $this->getCaptchaJs($lang) . '" async defer';
+        if (isset($nonce) && !empty($nonce)){
+            $html .= ' nonce="' . $nonce . '"';
+        }
+        $html .= '></script>' . PHP_EOL;
         $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit,_execute=true,_captchaBadge;</script>';
         $html .= "<script>window.addEventListener('load', _loadCaptcha);" . PHP_EOL;
         $html .= "function _loadCaptcha(){";
