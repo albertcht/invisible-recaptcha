@@ -115,7 +115,7 @@ class InvisibleReCaptcha
     {
         $html = '<div id="_g-recaptcha"></div>' . PHP_EOL;
         if ($this->getOption('hideBadge', false)) {
-            $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
+            $html .= '<style>.grecaptcha-badge{display:none !important;}</style>' . PHP_EOL;
         }
 
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
@@ -140,7 +140,7 @@ class InvisibleReCaptcha
         $html .= "function _loadCaptcha(){";
         if ($this->getOption('hideBadge', false)) {
             $html .= "_captchaBadge=document.querySelector('.grecaptcha-badge');";
-            $html .= "if(_captchaBadge){_captchaBadge.style = 'display:none;!important';}" . PHP_EOL;
+            $html .= "if(_captchaBadge){_captchaBadge.style = 'display:none !important;';}" . PHP_EOL;
         }
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
         $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
