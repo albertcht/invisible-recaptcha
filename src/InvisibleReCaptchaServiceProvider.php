@@ -72,8 +72,8 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
      */
     public function addBladeDirective(BladeCompiler $blade)
     {
-        $blade->directive('captcha', function ($lang) {
-            return "<?php echo app('captcha')->render({$lang}); ?>";
+        $blade->directive('captcha', function ($arguments) {
+            return "<?php echo app('captcha')->render({$arguments}); ?>";
         });
         $blade->directive('captchaPolyfill', function () {
             return "<?php echo app('captcha')->renderPolyfill(); ?>";
@@ -81,8 +81,8 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
         $blade->directive('captchaHTML', function () {
             return "<?php echo app('captcha')->renderCaptchaHTML(); ?>";
         });
-        $blade->directive('captchaScripts', function ($lang, $nonce) {
-            return "<?php echo app('captcha')->renderFooterJS({$lang}, {$nonce}); ?>";
+        $blade->directive('captchaScripts', function ($arguments) {
+            return "<?php echo app('captcha')->renderFooterJS({$arguments}); ?>";
         });
     }
 }

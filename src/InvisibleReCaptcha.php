@@ -2,6 +2,7 @@
 
 namespace AlbertCht\InvisibleReCaptcha;
 
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Request;
 use GuzzleHttp\Client;
 
@@ -92,7 +93,7 @@ class InvisibleReCaptcha
     {
         $html = $this->renderPolyfill();
         $html .= $this->renderCaptchaHTML();
-        $html .= $this->renderFooterJS($lang, $nonce);
+        $html .= $this->renderFooterJS([$lang, $nonce]);
         return $html;
     }
 
@@ -128,8 +129,11 @@ class InvisibleReCaptcha
      *
      * @return string
      */
-    public function renderFooterJS($lang = null, $nonce = null)
+    public function renderFooterJS($arguments)
     {
+        $lang = Arr::get($arguments, 0);
+        $nonce = Arr::get($arguments, 1);
+
         $html = '<script src="' . $this->getCaptchaJs($lang) . '" async defer';
         if (isset($nonce) && ! empty($nonce)) {
             $html .= ' nonce="' . $nonce . '"';
