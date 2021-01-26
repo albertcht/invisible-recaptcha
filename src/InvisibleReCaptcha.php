@@ -124,7 +124,7 @@ class InvisibleReCaptcha
     }
 
     /**
-     * Render the footer JS neccessary for the recaptcha integration.
+     * Render the footer JS necessary for the recaptcha integration.
      *
      * @return string
      */
@@ -136,7 +136,7 @@ class InvisibleReCaptcha
         $html .= "function _loadCaptcha(){";
         if ($this->getOption('hideBadge', false)) {
             $html .= "_captchaBadge=document.querySelector('.grecaptcha-badge');";
-            $html .= "if(_captchaBadge){_captchaBadge.style = 'display:none;!important';}";
+            $html .= "if(_captchaBadge){_captchaBadge.style = 'display:none;!important';}" . PHP_EOL;
         }
         $html .= '_captchaForm=document.querySelector("#_g-recaptcha").closest("form");';
         $html .= "_captchaSubmit=_captchaForm.querySelector('[type=submit]');";
