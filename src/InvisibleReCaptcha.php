@@ -124,7 +124,7 @@ class InvisibleReCaptcha
     }
 
     /**
-     * Render the footer JS neccessary for the recaptcha integration.
+     * Render the footer JS necessary for the recaptcha integration.
      *
      * @return string
      */
