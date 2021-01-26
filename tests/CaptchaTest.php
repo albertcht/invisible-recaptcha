@@ -59,6 +59,11 @@ class CaptchaTest extends TestCase
         $this->assertEquals($js . '?hl=us', $this->captcha->getCaptchaJs('us'));
     }
 
+    public function testJavascriptHasNonce()
+    {
+        $this->assertStringContainsString('nonce="nonce-ASDFGHJKL"', $this->captcha->renderFooterJS('us', 'nonce-ASDFGHJKL'));
+    }
+
     public function testGetPolyfillJs()
     {
         $js = 'https://cdn.polyfill.io/v2/polyfill.min.js';
@@ -79,10 +84,44 @@ class CaptchaTest extends TestCase
         $serviceProvider = new InvisibleReCaptchaServiceProvider($app);
         $serviceProvider->addBladeDirective($blade);
 
-        $result = $blade->compileString('@captcha()');
         $this->assertEquals(
-            "<?php echo app('captcha')->render(); ?>",
-            $result
+            "<?php echo app('captcha')->renderCaptcha(); ?>",
+            $blade->compileString('@captcha()')
+        );
+
+        $this->assertEquals(
+            "<?php echo app('captcha')->renderCaptcha('us'); ?>",
+            $blade->compileString("@captcha('us')")
+        );
+
+        $this->assertEquals(
+            "<?php echo app('captcha')->renderCaptcha('us', 'nonce-ASDFGHJKL'); ?>",
+            $blade->compileString("@captcha('us', 'nonce-ASDFGHJKL')")
+        );
+
+        $this->assertEquals(
+            "<?php echo app('captcha')->renderPolyfill(); ?>",
+            $blade->compileString('@captchaPolyfill()')
+        );
+
+        $this->assertEquals(
+            "<?php echo app('captcha')->renderCaptchaHTML(); ?>",
+            $blade->compileString('@captchaHTML()')
+        );
+
+        $this->assertEquals(
+            "<?php echo app('captcha')->renderFooterJS(); ?>",
+            $blade->compileString('@captchaScripts()')
+        );
+
+        $this->assertEquals(
+            "<?php echo app('captcha')->renderFooterJS('us'); ?>",
+            $blade->compileString("@captchaScripts('us')")
+        );
+
+        $this->assertEquals(
+            "<?php echo app('captcha')->renderFooterJS('us', 'nonce-ASDFGHJKL'); ?>",
+            $blade->compileString("@captchaScripts('us', 'nonce-ASDFGHJKL')")
         );
     }
 }

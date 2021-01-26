@@ -102,9 +102,9 @@ class InvisibleReCaptcha
      *
      * @return string
      */
-    public function renderCaptcha($arguments)
+    public function renderCaptcha(...$arguments)
     {
-        return $this->render($arguments);
+        return $this->render(...$arguments);
     }
 
     /**
@@ -139,7 +139,7 @@ class InvisibleReCaptcha
      *
      * @return string
      */
-    public function renderFooterJS($arguments)
+    public function renderFooterJS(...$arguments)
     {
         $lang = Arr::get($arguments, 0);
         $nonce = Arr::get($arguments, 1);
