@@ -131,7 +131,7 @@ class InvisibleReCaptcha
     public function renderFooterJS($lang = null, $nonce = null)
     {
         $html = '<script src="' . $this->getCaptchaJs($lang) . '" async defer';
-        if (isset($nonce) && !empty($nonce)){
+        if (isset($nonce) && ! empty($nonce)) {
             $html .= ' nonce="' . $nonce . '"';
         }
         $html .= '></script>' . PHP_EOL;
