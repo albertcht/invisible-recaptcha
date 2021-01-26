@@ -98,6 +98,16 @@ class InvisibleReCaptcha
     }
 
     /**
+     * Render HTML reCaptcha from directive.
+     *
+     * @return string
+     */
+    public function renderCaptcha($arguments)
+    {
+        return $this->render($arguments);
+    }
+
+    /**
      * Render the polyfill JS components only.
      *
      * @return string
