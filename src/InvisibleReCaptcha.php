@@ -93,7 +93,7 @@ class InvisibleReCaptcha
     {
         $html = $this->renderPolyfill();
         $html .= $this->renderCaptchaHTML();
-        $html .= $this->renderFooterJS([$lang, $nonce]);
+        $html .= $this->renderFooterJS($lang, $nonce);
         return $html;
     }
 
