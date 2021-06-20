@@ -10,6 +10,11 @@ class InvisibleReCaptcha
 {
     const API_URI = 'https://www.google.com/recaptcha/api.js';
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
+    const POLYFILL_URI = 'https://cdn.polyfill.io/v2/polyfill.min.js';
+    const DEBUG_ELEMENTS = [
+        '_submitForm',
+        '_captchaCallback'
+    ];
 
     /**
      * The reCaptcha site key.
@@ -72,16 +77,23 @@ class InvisibleReCaptcha
     }
 
     /**
+     * Get polyfill js
+     *
+     * @return string
+     */
+    public function getPolyfillJs()
+    {
+        return static::POLYFILL_URI;
+    }
+
+    /**
      * Render HTML reCaptcha by optional language param.
      *
      * @return string
      */
     public function render($lang = null, $nonce = null)
     {
-        $html = $this->renderPolyfill();
-        $html .= $this->renderCaptchaHTML($lang, $nonce);
-        // $html .= $this->renderFooterJS($lang, $nonce);
-        return $html;
+        return $this->renderCaptchaHTML($lang, $nonce);
     }
 
     /**
@@ -104,10 +116,6 @@ class InvisibleReCaptcha
         return '<script src="' . $this->getPolyfillJs() . '"></script>' . PHP_EOL;
     }
 
-    //https://gist.github.com/benzkji/4078af592c97810fdb141b5937a9aaf9
-    //https://developers.google.com/recaptcha/docs/invisible#examples
-    //https://stackoverflow.com/questions/43231850/how-to-add-multiple-invisible-recaptcha-in-single-page/46621784#46621784
-
     /**
      * Render the captcha HTML.
      *
@@ -124,7 +132,7 @@ class InvisibleReCaptcha
         } else {
             $this->renderedTimes++;
         }
-        $html .= "<div class='_g-recaptcha' id='_g-recaptcha_{$this->renderedTimes}'></div>" . PHP_EOL;
+        $html .= "<div class='_g-recaptcha' id='_g-recaptcha_{$this->renderedTimes}' data-badge='{$this->getOption('dataBadge', 'bottomright')}'></div>" . PHP_EOL;
 
         return $html;
     }
@@ -138,27 +146,26 @@ class InvisibleReCaptcha
     {
         $lang = Arr::get($arguments, 0);
         $nonce = Arr::get($arguments, 1);
-        $nonce = ( isset($nonce) && ! empty($nonce) ) ? "nonce=\"$nonce\"" : '';
         $src = $this->getCaptchaJs($lang);
 
-        // if ($this->getOption('debug', false)) {
-        //     $html .= $this->renderDebug();
-        // }
+        if ($this->getOption('debug', false)) {
+            $debug = $this->renderDebug();
+        } else { $debug = ''; }
 
         if ( $this->getOption('hideBadge', false) ) {
 $badge = <<<EOD
         _captchaBadge=document.querySelector('.grecaptcha-badge');
-        if(_captchaBadge){_captchaBadge.style = 'display:none !important;';}            
+        if(_captchaBadge){_captchaBadge.style = 'display:none !important;';}
 EOD;
         } else { $badge = ''; }
 
 $html = <<<EOD
-<script src="{$src}" async defer {$nonce}></script>
-<script>var _submitForm,_captchaCallback,_captchaForm,_execute=true,_captchaBadge;</script>
+{$this->renderPolyfill()}
 <script>
-    window.addEventListener('load', _loadCaptcha);
-    function {
+    var _execute = true;
+    window.addEventListener('load', function() {
         {$badge}
+        window._renderedTimes=$("._g-recaptcha").length;
         _captchaForms=$("._g-recaptcha").closest("form");
         _captchaForms.each(function(){
             $(this)[0].addEventListener('submit', function(e) {
@@ -167,71 +174,66 @@ $html = <<<EOD
                     _execute=_beforeSubmit(e);
                 }
                 if(_execute){
+                    _captchaForm=$(this);
                     grecaptcha.execute();
                 }
             });
         });
-        _submitForm=function(){
+        window._submitForm=function(){
             if(typeof _submitEvent === "function"){
                 _submitEvent();
                 grecaptcha.reset();
-            } else { 
-                _captchaForm.submit(); 
-            } 
+            } else {
+                _captchaForm.submit();
+            }
         };
-
-        _captchaCallback=function(){
+        window._captchaCallback = function(e) {
             grecaptcha.render("_g-recaptcha_"+_renderedTimes,{
                 sitekey:'{$this->siteKey}',
                 size:'invisible',
-                callback:_submitForm
+                callback:window._submitForm
             });
         }
-    }
-</script>
-EOD;
-
-        return $html;
-    }
-
-    public function initRender($lang)
-    {
-        $src = $this->getCaptchaJs($lang);
-
-$html = <<<EOD
-<script>var _renderedTimes,_captchaCallback,_captchaForms,_submitForm,_submitBtn;</script>
-<script>var _submitAction=true,_captchaForm;</script>
-<script>
-$.getScript('$src').done(function(data,status,jqxhr){
-    _renderedTimes=$("._g-recaptcha").length;
-    $("._g-recaptcha").closest("form").each(function( index ){
-        $(this)[0].addEventListener("submit",function(e){
-            e.preventDefault();
-            _captchaForm=$(this);
-            _submitBtn=$(this).find(":submit");
-            grecaptcha.execute();
+        {$debug}
+        $.ajax({
+            dataType : "script",
+            url      : "{$src}",
+            attrs    : {
+                nonce: "{$nonce}",
+                defer: 1
+            },
         });
     });
-    
-    _submitForm=function(){
-        _submitBtn.trigger("captcha");
-        if(_submitAction){
-            _captchaForm.submit();
-        }
-        grecaptcha.reset();
-    };
-    _captchaCallback=function(){
-        grecaptcha.render("_g-recaptcha_"+_renderedTimes,{
-            sitekey:'{$this->siteKey}',
-            size:'invisible',
-            callback:_submitForm
-        });
-    }
-});
 </script>
 EOD;
         $this->renderedTimes++;
         return $html;
+    }
+
+    /**
+     * Get debug javascript code.
+     *
+     * @return string
+     */
+    public function renderDebug()
+    {
+        $html = '';
+        foreach (static::DEBUG_ELEMENTS as $element) {
+            $html .= $this->consoleLog('"Checking element binding of ' . $element . '..."');
+            $html .= $this->consoleLog("window.$element!==undefined");
+        }
+
+        return $html;
+    }
+
+    /**
+     * Get console.log function for javascript code.
+     *
+     * @return string
+     */
+    public function consoleLog($string)
+    {
+        return "console.log({$string});";
     }
 
     /**
