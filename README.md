@@ -9,6 +9,10 @@ Invisible reCAPTCHA
 * In most of cases, there should be only one captcha in your page. You should use master branch normally.
 * **Do not use multiple captchas in one page for protecting every form far from bots**, it will cause terrible user experience.
 
+## Notice
+
+* The master branch doesn't support multi captchas feature, please use `multi-forms` branch if you need it. (**Most of the time you are misusing recaptcha when you try to put multiple captchas in one page.**)
+
 ## Installation
 
 ```
