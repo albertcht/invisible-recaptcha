@@ -56,12 +56,12 @@ class CaptchaTest extends TestCase
         $js = 'https://www.google.com/recaptcha/api.js?onload=_captchaCallback&render=explicit';
 
         $this->assertEquals($js, $this->captcha->getCaptchaJs());
-        $this->assertEquals($js . '?hl=us', $this->captcha->getCaptchaJs('us'));
+        $this->assertEquals($js . '&hl=us', $this->captcha->getCaptchaJs('us'));
     }
 
     public function testJavascriptHasNonce()
     {
-        $this->assertStringContainsString('nonce="nonce-ASDFGHJKL"', $this->captcha->renderFooterJS('us', 'nonce-ASDFGHJKL'));
+        $this->assertStringContainsString('nonce: "nonce-ASDFGHJKL"', $this->captcha->renderFooterJS('us', 'nonce-ASDFGHJKL'));
     }
 
     public function testGetPolyfillJs()

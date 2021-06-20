@@ -355,6 +355,16 @@ EOD;
     }
 
     /**
+     * Getter function of guzzle client
+     *
+     * @return string
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
      * Set guzzle client
      *
      * @param \GuzzleHttp\Client $client
