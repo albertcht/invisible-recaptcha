@@ -31,8 +31,7 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
             return new InvisibleReCaptcha(
                 $app['config']['captcha.siteKey'],
                 $app['config']['captcha.secretKey'],
-                $app['config']['captcha.hideBadge'],
-                $app['config']['captcha.debug']
+                $app['config']['captcha.options']
             );
         });
 
@@ -73,8 +72,17 @@ class InvisibleReCaptchaServiceProvider extends ServiceProvider
      */
     public function addBladeDirective(BladeCompiler $blade)
     {
-        $blade->directive('captcha', function ($lang) {
-            return "<?php echo app('captcha')->render(" . ($lang ? "'$lang'" : '') . '); ?>';
+        $blade->directive('captcha', function ($arguments) {
+            return "<?php echo app('captcha')->renderCaptcha({$arguments}); ?>";
+        });
+        $blade->directive('captchaPolyfill', function () {
+            return "<?php echo app('captcha')->renderPolyfill(); ?>";
+        });
+        $blade->directive('captchaHTML', function () {
+            return "<?php echo app('captcha')->renderCaptchaHTML(); ?>";
+        });
+        $blade->directive('captchaScripts', function ($arguments) {
+            return "<?php echo app('captcha')->renderFooterJS({$arguments}); ?>";
         });
     }
 }

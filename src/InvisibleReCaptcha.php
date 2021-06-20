@@ -2,6 +2,7 @@
 
 namespace AlbertCht\InvisibleReCaptcha;
 
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Request;
 use GuzzleHttp\Client;
 
@@ -9,6 +10,11 @@ class InvisibleReCaptcha
 {
     const API_URI = 'https://www.google.com/recaptcha/api.js';
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
+    const POLYFILL_URI = 'https://cdn.polyfill.io/v2/polyfill.min.js';
+    const DEBUG_ELEMENTS = [
+        '_submitForm',
+        '_captchaCallback'
+    ];
 
     /**
      * The reCaptcha site key.
@@ -25,16 +31,11 @@ class InvisibleReCaptcha
     protected $secretKey;
 
     /**
-     * The config to determine if hide the badge.
+     * The other config options.
      *
-     * @var boolean
+     * @var array
      */
-    protected $hideBadge;
-
-    /**
-     * @var \GuzzleHttp\Client
-     */
-    protected $client;
+    protected $options;
 
     /**
      * Rendered number in total.
@@ -48,14 +49,18 @@ class InvisibleReCaptcha
      *
      * @param string $secretKey
      * @param string $siteKey
-     * @param boolean $hideBadge
+     * @param array $options
      */
-    public function __construct($siteKey, $secretKey, $hideBadge = false)
+    public function __construct($siteKey, $secretKey, $options = [])
     {
         $this->siteKey = $siteKey;
         $this->secretKey = $secretKey;
-        $this->hideBadge = $hideBadge;
-        $this->client = new Client(['timeout' => 5]);
+        $this->setOptions($options);
+        $this->setClient(
+            new Client([
+                'timeout' => $this->getOption('timeout', 5)
+            ])
+        );
     }
 
     /**
@@ -72,42 +77,163 @@ class InvisibleReCaptcha
     }
 
     /**
+     * Get polyfill js
+     *
+     * @return string
+     */
+    public function getPolyfillJs()
+    {
+        return static::POLYFILL_URI;
+    }
+
+    /**
      * Render HTML reCaptcha by optional language param.
      *
      * @return string
      */
-    public function render($lang = null)
+    public function render($lang = null, $nonce = null)
+    {
+        return $this->renderCaptchaHTML($lang, $nonce);
+    }
+
+    /**
+     * Render HTML reCaptcha from directive.
+     *
+     * @return string
+     */
+    public function renderCaptcha(...$arguments)
+    {
+        return $this->render(...$arguments);
+    }
+
+    /**
+     * Render the polyfill JS components only.
+     *
+     * @return string
+     */
+    public function renderPolyfill()
+    {
+        return '<script src="' . $this->getPolyfillJs() . '"></script>' . PHP_EOL;
+    }
+
+    /**
+     * Render the captcha HTML.
+     *
+     * @return string
+     */
+    public function renderCaptchaHTML(...$arguments)
     {
         $html = '';
         if ($this->renderedTimes === 0) {
-            $html .= $this->initRender($lang);
+            $html .= $this->renderFooterJS(...$arguments);
+            if ($this->getOption('hideBadge', false)) {
+                $html .= '<style>.grecaptcha-badge{display:none !important;}</style>' . PHP_EOL;
+            }
         } else {
             $this->renderedTimes++;
         }
-        $html .= "<div class='_g-recaptcha' id='_g-recaptcha_{$this->renderedTimes}'></div>" . PHP_EOL;
+        $html .= "<div class='_g-recaptcha' id='_g-recaptcha_{$this->renderedTimes}' data-badge='{$this->getOption('dataBadge', 'bottomright')}'></div>" . PHP_EOL;
 
         return $html;
     }
 
-    public function initRender($lang)
+    /**
+     * Render the footer JS necessary for the recaptcha integration.
+     *
+     * @return string
+     */
+    public function renderFooterJS(...$arguments)
     {
-        $html = '<script>var _renderedTimes,_captchaCallback,_captchaForms,_submitForm,_submitBtn;</script>';
-        $html .= '<script>var _submitAction=true,_captchaForm;</script>';
-        $html .= "<script>$.getScript('{$this->getCaptchaJs($lang)}').done(function(data,status,jqxhr){";
-        $html .= '_renderedTimes=$("._g-recaptcha").length;_captchaForms=$("._g-recaptcha").closest("form");';
-        $html .= '_captchaForms.each(function(){$(this)[0].addEventListener("submit",function(e){e.preventDefault();';
-        $html .= '_captchaForm=$(this);_submitBtn=$(this).find(":submit");grecaptcha.execute();});});';
-        $html .= '_submitForm=function(){_submitBtn.trigger("captcha");if(_submitAction){_captchaForm.submit();}grecaptcha.reset();};';
-        $html .= '_captchaCallback=function(){grecaptcha.render("_g-recaptcha_"+_renderedTimes,';
-        $html .= "{sitekey:'{$this->siteKey}',size:'invisible',callback:_submitForm});}";
-        $html .= '});</script>' . PHP_EOL;
+        $lang = Arr::get($arguments, 0);
+        $nonce = Arr::get($arguments, 1);
+        $src = $this->getCaptchaJs($lang);
 
-        if ($this->hideBadge) {
-            $html .= '<style>.grecaptcha-badge{display:none;!important}</style>' . PHP_EOL;
+        if ($this->getOption('debug', false)) {
+            $debug = $this->renderDebug();
+        } else { $debug = ''; }
+
+        if ( $this->getOption('hideBadge', false) ) {
+$badge = <<<EOD
+        _captchaBadge=document.querySelector('.grecaptcha-badge');
+        if(_captchaBadge){_captchaBadge.style = 'display:none !important;';}
+EOD;
+        } else { $badge = ''; }
+
+$html = <<<EOD
+{$this->renderPolyfill()}
+<script>
+    var _execute = true;
+    window.addEventListener('load', function() {
+        {$badge}
+        window._renderedTimes=$("._g-recaptcha").length;
+        _captchaForms=$("._g-recaptcha").closest("form");
+        _captchaForms.each(function(){
+            $(this)[0].addEventListener('submit', function(e) {
+                e.preventDefault();
+                if(typeof _beforeSubmit==='function') {
+                    _execute=_beforeSubmit(e);
+                }
+                if(_execute){
+                    _captchaForm=$(this);
+                    grecaptcha.execute();
+                }
+            });
+        });
+        window._submitForm=function(){
+            if(typeof _submitEvent === "function"){
+                _submitEvent();
+                grecaptcha.reset();
+            } else {
+                _captchaForm.submit();
+            }
+        };
+        window._captchaCallback = function(e) {
+            grecaptcha.render("_g-recaptcha_"+_renderedTimes,{
+                sitekey:'{$this->siteKey}',
+                size:'invisible',
+                callback:window._submitForm
+            });
         }
-
+        {$debug}
+        $.ajax({
+            dataType : "script",
+            url      : "{$src}",
+            attrs    : {
+                nonce: "{$nonce}",
+                defer: 1
+            },
+        });
+    });
+</script>
+EOD;
         $this->renderedTimes++;
         return $html;
+    }
+
+    /**
+     * Get debug javascript code.
+     *
+     * @return string
+     */
+    public function renderDebug()
+    {
+        $html = '';
+        foreach (static::DEBUG_ELEMENTS as $element) {
+            $html .= $this->consoleLog('"Checking element binding of ' . $element . '..."');
+            $html .= $this->consoleLog("window.$element!==undefined");
+        }
+
+        return $html;
+    }
+
+    /**
+     * Get console.log function for javascript code.
+     *
+     * @return string
+     */
+    public function consoleLog($string)
+    {
+        return "console.log({$string});";
     }
 
     /**
@@ -167,7 +293,7 @@ class InvisibleReCaptcha
     /**
      * Getter function of site key
      *
-     * @return strnig
+     * @return string
      */
     public function getSiteKey()
     {
@@ -177,7 +303,7 @@ class InvisibleReCaptcha
     /**
      * Getter function of secret key
      *
-     * @return strnig
+     * @return string
      */
     public function getSecretKey()
     {
@@ -185,19 +311,53 @@ class InvisibleReCaptcha
     }
 
     /**
-     * Getter function of hideBadge
+     * Set options
      *
-     * @return strnig
+     * @param array $options
      */
-    public function getHideBadge()
+    public function setOptions($options)
     {
-        return $this->hideBadge;
+        $this->options = $options;
+    }
+
+    /**
+     * Set option
+     *
+     * @param string $key
+     * @param string $value
+     */
+    public function setOption($key, $value)
+    {
+        $this->options[$key] = $value;
+    }
+
+    /**
+     * Getter function of options
+     *
+     * @return string
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Get default option value for options. (for support under PHP 7.0)
+     *
+     * @param string $key
+     * @param string $value
+     *
+     * @return string
+     */
+    public function getOption($key, $value = null)
+    {
+        return array_key_exists($key, $this->options) ? $this->options[$key] : $value;
     }
 
     /**
      * Getter function of guzzle client
      *
-     * @return strnig
+     * @return string
      */
     public function getClient()
     {
@@ -205,9 +365,19 @@ class InvisibleReCaptcha
     }
 
     /**
+     * Set guzzle client
+     *
+     * @param \GuzzleHttp\Client $client
+     */
+    public function setClient(Client $client)
+    {
+        $this->client = $client;
+    }
+
+    /**
      * Getter function of rendered times
      *
-     * @return strnig
+     * @return string
      */
     public function getRenderedTimes()
     {
