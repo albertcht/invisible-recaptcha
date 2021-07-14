@@ -152,6 +152,8 @@ class InvisibleReCaptcha
             $debug = $this->renderDebug();
         } else { $debug = ''; }
 
+
+
         if ( $this->getOption('hideBadge', false) ) {
 $badge = <<<EOD
         _captchaBadge=document.querySelector('.grecaptcha-badge');
@@ -159,11 +161,25 @@ $badge = <<<EOD
 EOD;
         } else { $badge = ''; }
 
+        if ( $this->getOption('lazyLoad', false) ) {
+$eventListener = <<<EOD
+        window.addEventListener('scroll', loadReCaptcha);
+        window.addEventListener('click', loadReCaptcha);
+        window.addEventListener('keydown', loadReCaptcha);
+EOD;
+        } else {
+$eventListener = <<<EOD
+        window.addEventListener('load', loadReCaptcha);
+EOD;
+        }
+
 $html = <<<EOD
 {$this->renderPolyfill()}
 <script>
+    var _executed = false;
     var _execute = true;
-    window.addEventListener('load', function() {
+    var loadReCaptcha = function (event) {
+        if ( _executed ) return;
         {$badge}
         window._renderedTimes=$("._g-recaptcha").length;
         _captchaForms=$("._g-recaptcha").closest("form");
@@ -203,7 +219,10 @@ $html = <<<EOD
                 defer: 1
             },
         });
-    });
+        _executed = true;
+    };
+
+    {$eventListener}
 </script>
 EOD;
         $this->renderedTimes++;
