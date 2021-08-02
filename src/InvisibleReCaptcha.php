@@ -152,6 +152,8 @@ class InvisibleReCaptcha
             $debug = $this->renderDebug();
         } else { $debug = ''; }
 
+
+
         if ( $this->getOption('hideBadge', false) ) {
 $badge = <<<EOD
         _captchaBadge=document.querySelector('.grecaptcha-badge');
@@ -159,22 +161,37 @@ $badge = <<<EOD
 EOD;
         } else { $badge = ''; }
 
+        if ( $this->getOption('lazyLoad', false) ) {
+$eventListener = <<<EOD
+        window.addEventListener('scroll', loadReCaptcha);
+        window.addEventListener('click', loadReCaptcha);
+        window.addEventListener('keydown', loadReCaptcha);
+EOD;
+        } else {
+$eventListener = <<<EOD
+        window.addEventListener('load', loadReCaptcha);
+EOD;
+        }
+
 $html = <<<EOD
 {$this->renderPolyfill()}
 <script>
+    var _executed = false;
     var _execute = true;
-    window.addEventListener('load', function() {
+    var loadReCaptcha = function (event) {
+        if ( _executed ) return;
         {$badge}
-        window._renderedTimes=$("._g-recaptcha").length;
-        _captchaForms=$("._g-recaptcha").closest("form");
-        _captchaForms.each(function(){
-            $(this)[0].addEventListener('submit', function(e) {
+        _captchas = document.querySelectorAll("._g-recaptcha");
+        window._renderedTimes=_captchas.length;
+        _captchas.forEach(function(element){
+            var form = element.closest('form');
+            form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 if(typeof _beforeSubmit==='function') {
                     _execute=_beforeSubmit(e);
                 }
                 if(_execute){
-                    _captchaForm=$(this);
+                    _captchaForm=form;
                     grecaptcha.execute();
                 }
             });
@@ -195,15 +212,20 @@ $html = <<<EOD
             });
         }
         {$debug}
-        $.ajax({
-            dataType : "script",
-            url      : "{$src}",
-            attrs    : {
-                nonce: "{$nonce}",
-                defer: 1
-            },
-        });
-    });
+
+        // load script
+        var po = document.createElement('script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.nonce = "{$nonce}";
+        po.src = "{$src}";
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+
+        _executed = true;
+    };
+
+    {$eventListener}
 </script>
 EOD;
         $this->renderedTimes++;
