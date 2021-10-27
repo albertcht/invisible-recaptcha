@@ -91,8 +91,8 @@ class InvisibleReCaptcha
      */
     public function render($lang = null, $nonce = null)
     {
-        $html = $this->renderPolyfill();
-        $html .= $this->renderCaptchaHTML();
+        $html = $this->renderPolyfill($nonce);
+        $html .= $this->renderCaptchaHTML($nonce);
         $html .= $this->renderFooterJS($lang, $nonce);
         return $html;
     }
@@ -112,9 +112,9 @@ class InvisibleReCaptcha
      *
      * @return string
      */
-    public function renderPolyfill()
+    public function renderPolyfill($nonce = null)
     {
-        return '<script src="' . $this->getPolyfillJs() . '"></script>' . PHP_EOL;
+        return '<script src="' . $this->getPolyfillJs() . '" '.(! empty($nonce) ? 'nonce="'.$nonce.'"' : '').'></script>' . PHP_EOL;
     }
 
     /**
@@ -122,11 +122,11 @@ class InvisibleReCaptcha
      *
      * @return string
      */
-    public function renderCaptchaHTML()
+    public function renderCaptchaHTML($nonce = null)
     {
         $html = '<div id="_g-recaptcha"></div>' . PHP_EOL;
         if ($this->getOption('hideBadge', false)) {
-            $html .= '<style>.grecaptcha-badge{display:none !important;}</style>' . PHP_EOL;
+            $html .= '<style '.(! empty($nonce) ? 'nonce="'.$nonce.'"' : '').'>.grecaptcha-badge{display:none !important;}</style>' . PHP_EOL;
         }
 
         $html .= '<div class="g-recaptcha" data-sitekey="' . $this->siteKey .'" ';
@@ -149,8 +149,8 @@ class InvisibleReCaptcha
             $html .= ' nonce="' . $nonce . '"';
         }
         $html .= '></script>' . PHP_EOL;
-        $html .= '<script>var _submitForm,_captchaForm,_captchaSubmit,_execute=true,_captchaBadge;</script>';
-        $html .= "<script>window.addEventListener('load', _loadCaptcha);" . PHP_EOL;
+        $html .= '<script'.(! empty($nonce) ? ' nonce="'.$nonce.'"' : '').'>var _submitForm,_captchaForm,_captchaSubmit,_execute=true,_captchaBadge;</script>';
+        $html .= "<script".(! empty($nonce) ? ' nonce="'.$nonce.'"' : '').">window.addEventListener('load', _loadCaptcha);" . PHP_EOL;
         $html .= "function _loadCaptcha(){";
         if ($this->getOption('hideBadge', false)) {
             $html .= "_captchaBadge=document.querySelector('.grecaptcha-badge');";
