@@ -15,6 +15,8 @@ return [
         // timeout value for guzzle client
         'timeout' => env('INVISIBLE_RECAPTCHA_TIMEOUT', 5),
         // set true to show binding status on your javascript console
-        'debug' => env('INVISIBLE_RECAPTCHA_DEBUG', false)
+        'debug' => env('INVISIBLE_RECAPTCHA_DEBUG', false),
+        // set the minimum score, anything below the score will be treated as spam
+        'score' => env('INVISIBLE_RECAPTCHA_MIN_SCORE', 0.5)
     ]
 ];
