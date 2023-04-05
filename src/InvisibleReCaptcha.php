@@ -216,7 +216,8 @@ class InvisibleReCaptcha
             'response' => $response
         ]);
 
-        return isset($response['success']) && $response['success'] === true;
+        return (isset($response["score"]) && $response["score"] > $this->getOption('score'))
+            && (isset($response['success']) && $response['success'] === true);
     }
 
     /**
