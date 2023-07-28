@@ -18,12 +18,6 @@
             "homepage": "https://www.albert-chen.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://repository.placetopay.com"
-        }
-    ],
     "require": {
         "php": "^5.6.4 || ^7.0 || ^8.0",
         "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
