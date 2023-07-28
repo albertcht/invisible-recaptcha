@@ -1,5 +1,5 @@
 {
-    "name": "albertcht/invisible-recaptcha",
+    "name": "placetopay/invisible-recaptcha",
     "description": "Invisible reCAPTCHA For Laravel.",
     "keywords": [
         "recaptcha",
@@ -16,6 +16,12 @@
         {
             "name": "Albert Chen",
             "homepage": "https://www.albert-chen.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repository.placetopay.com"
         }
     ],
     "require": {
