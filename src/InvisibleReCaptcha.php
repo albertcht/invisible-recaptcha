@@ -10,7 +10,7 @@ class InvisibleReCaptcha
 {
     const API_URI = 'https://www.google.com/recaptcha/api.js';
     const VERIFY_URI = 'https://www.google.com/recaptcha/api/siteverify';
-    const POLYFILL_URI = 'https://cdn.polyfill.io/v2/polyfill.min.js';
+    const POLYFILL_URI = 'https://cdnjs.cloudflare.com/ajax/libs/js-polyfills/0.1.43/polyfill.min.js';
     const DEBUG_ELEMENTS = [
         '_submitForm',
         '_captchaForm',
