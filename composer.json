@@ -1,5 +1,6 @@
 {
-    "name": "albertcht/invisible-recaptcha",
+    "name": "rowanfuchs/invisible-recaptcha",
+    "version": "1.0.1",
     "description": "Invisible reCAPTCHA For Laravel.",
     "keywords": [
         "recaptcha",
@@ -16,12 +17,16 @@
         {
             "name": "Albert Chen",
             "homepage": "https://www.albert-chen.com"
+        },
+        {
+            "name": "Rowan Fuchs",
+            "homepage": "https://rowanfuchs.nl"
         }
     ],
     "require": {
-        "php": "^5.6.4 || ^7.0 || ^8.0",
-        "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
-        "illuminate/view": "^5.0|^6.0|^7.0|^8.0|^9.0",
+        "php": "^8.0 || ^8.3",
+        "illuminate/support": "^9.0|^11.0",
+        "illuminate/view": "^9.0|^11.0",
         "guzzlehttp/guzzle": "^6.2|^7.0"
     },
     "require-dev": {

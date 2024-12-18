@@ -50,7 +50,10 @@ INVISIBLE_RECAPTCHA_BADGEHIDE=false
 INVISIBLE_RECAPTCHA_DATABADGE='bottomright'
 INVISIBLE_RECAPTCHA_TIMEOUT=5
 INVISIBLE_RECAPTCHA_DEBUG=false
+INVISIBLE_RECAPTCHA_MIN_SCORE=0.5
 ```
+
+> By default `INVISIBLE_RECAPTCHA_MIN_SCORE` is set to: `0.5` anything below that value is treated as spam, increase the score if you still experience spam
 
 > There are three different captcha styles you can set: `bottomright`, `bottomleft`, `inline`
 
