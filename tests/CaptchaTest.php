@@ -53,8 +53,8 @@ class CaptchaTest extends TestCase
 
     public function testGetCaptchaJs()
     {
-        $js = 'https://www.google.com/recaptcha/api.js';
-
+        $js = 'https://cdnjs.cloudflare.com/polyfill/v2/polyfill.min.js';
+        
         $this->assertEquals($js, $this->captcha->getCaptchaJs());
         $this->assertEquals($js . '?hl=us', $this->captcha->getCaptchaJs('us'));
     }
