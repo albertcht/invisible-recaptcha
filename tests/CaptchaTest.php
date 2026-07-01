@@ -76,10 +76,7 @@ class CaptchaTest extends TestCase
         $app = Container::getInstance();
         $app->instance('captcha', $this->captcha);
 
-        $blade = new BladeCompiler(
-            $this->getMockBuilder(Filesystem::class)->disableOriginalConstructor()->getMock(),
-            __DIR__
-        );
+        $blade = new BladeCompiler($this->createStub(Filesystem::class), __DIR__);
 
         $serviceProvider = new InvisibleReCaptchaServiceProvider($app);
         $serviceProvider->addBladeDirective($blade);

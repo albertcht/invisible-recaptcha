@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"Tests\\CaptchaTest::testConstructor":0.001,"Tests\\CaptchaTest::testGetOptions":0,"Tests\\CaptchaTest::testSetOption":0,"Tests\\CaptchaTest::testGetCaptchaJs":0,"Tests\\CaptchaTest::testJavascriptHasNonce":0.002,"Tests\\CaptchaTest::testGetPolyfillJs":0,"Tests\\CaptchaTest::testBladeDirective":0.015}}
